@@ -1,0 +1,103 @@
+{% extends 'public/includes/base.html' %}
+
+{% load i18n %}
+{% load static %}
+{% load humanize %}
+{% load hitcount_tags %}
+
+
+{% block seo %}
+	<meta name="keywords" content="">
+	<meta name="title" content="Contact us right now 😋😋 | Foody ">
+	<meta name="description" content="">
+	<meta property="og:title" content="Contact us right now 😋😋 | Foody ">
+	<meta property="og:url" content="{{ current_site }}{{ request.path }}">
+	<meta property="og:description" content="">
+	<meta property="og:image" content="">
+{% endblock seo %}
+
+{% block title %}
+		Contact us right now 😋😋 | Foody 
+{% endblock title %}
+
+{% block extra_head %}{% endblock extra_head %}
+
+
+
+{% block content %}
+	{% if messages %}
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-4 col-md-4"></div>
+			<div class="col-lg-4 col-md-4">
+				<div class="mt-5 pt-4 center-block">
+	    		{% for message in messages %}
+	    		    <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
+	    		        {{ message }}
+	    		        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	    		            <span aria-hidden="true">&times;</span>
+	    		        </button>
+	    		    </div>
+	    		{% endfor %}
+		    	</div>
+			</div>
+	    </div>
+	</div>
+	{% endif %}
+
+
+
+	<section id="blog">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-8 clearfix">
+					<div class="leave-comment">
+						<h5 class="text-center pb-3">CONTACT US RIGHT NOW | <strong class="text-info">FOODY</strong></h5>
+						<form method="POST" class="form-horizontal" role="form">
+							{% csrf_token %}
+							<div class="form-group">
+						    	<label for="inputname" class="col-sm-2 control-label">Name</label>
+							    <div class="col-sm-10">
+							      	{{contact_form.name}}
+							    </div>
+						  	</div>	<!-- End of /.form-group -->
+						  	<div class="form-group">
+						    	<label for="inputEmail" class="col-sm-2 control-label">Email</label>
+							    <div class="col-sm-10">
+							      	{{contact_form.email}}
+							    </div>
+						  	</div>	<!-- End of /.form-group -->
+						  	<div class="form-group">
+						    	<label for="inputwebsite" class="col-sm-2 control-label">Subject</label>
+							    <div class="col-sm-10">
+							      	{{contact_form.subject}}
+							    </div>
+						  	</div>	<!-- End of /.form-group -->
+						  	<div class="form-group">
+						    	<label for="inputmessage" class="col-sm-2 control-label">Message</label>
+							    <div class="col-sm-10">
+							      	{{contact_form.message}}
+							    </div>
+						  	</div>	<!-- End of /.form-group -->
+						  		
+							<div class="form-group">
+						    	<div class="col-sm-offset-2 col-sm-10">
+						      		<button type="submit" class="btn btn-primary btn-block mt-4">Send your message</button>
+						    	</div>
+						  	</div>	<!-- End of /.form-group -->
+						</form>	<!-- End of /.form-horizontal -->
+					</div>	<!-- End of /.leave comments -->
+				</div>	<!-- End of /.col-md-9 -->
+			</div>
+		</div>
+	</section>
+{% endblock content %}
+
+
+{% block header_search %}
+    {% include 'public/includes/site_header_without_search.html' %}
+{% endblock header_search %}
+
+{% block extra_scripts %}{% endblock extra_scripts %}
+

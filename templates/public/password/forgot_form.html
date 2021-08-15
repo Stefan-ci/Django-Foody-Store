@@ -1,0 +1,83 @@
+{% extends 'public/includes/base.html' %}
+
+{% load i18n %}
+{% load static %}
+{% load humanize %}
+{% load hitcount_tags %}
+{% load notifications_tags %}
+
+{% block title %}
+    Mot de passe oublié ? | Afro-DF Bouaké
+{% endblock title %}
+
+
+{% block extra_links %}
+    <link rel="stylesheet" href="{% static 'css/authentication.css' %}">
+{% endblock extra_links %}
+
+{% block content %}
+    
+    {% if messages %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-4"></div>
+            <div class="col-lg-4 col-md-4">
+                <div class="mt-5 pt-4 center-block">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    
+    <div class="container">
+        <div class="pt-5"></div>
+        <div class="row">
+            <div class="col-lg-4"></div>
+            <div class="mb-4 pt-5">
+                <div class="card" id="login">
+                    <div class="header-bar">
+                        <h2 class="text-center">Mot de passe oublié ?</h2>
+                    </div>
+                    <div class="card-body">
+                        <p class="text-warning">
+                            Assurez-vous d'avoir une bonne connexion internet <br> afin de réinitialiser votre mot de passe !
+                        </p>
+                        <form method="POST" class="login">
+                            {% csrf_token %}
+
+                            <label>
+                                Adresse électronique
+                            </label>
+                            {{ form.email }}
+                            <input type="submit" class="btn btn-success btn-block mt-4" value="Réinitialiser" />
+                            <hr>
+                        </form>
+                        <div class="text-center">
+                            <a class="small" href="{% url 'login' %}">
+                                Se connecter 
+                            </a>
+                        </div>
+                        <div class="text-center">
+                            <a class="small" href="{% url 'register' %}">
+                                S'inscrire
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block footer %}
+    {% include 'public/includes/tiny_footer.html' %}
+{% endblock footer %}

@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        Access denied 😋😋 | Foody 
+    </title>
+    <style>
+        body {
+           width: 100vw;
+           height: 100vh;
+        }
+    </style>
+    <script src="{% static 'js/sweetalert.min.js' %}"></script>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>       
+        var time = 0;
+        var can = document.querySelector("canvas");     
+        var a = can.getContext('2d');
+        can.width = window.innerWidth;
+        can.height = window.innerHeight;
+        a.fillStyle = 'hsla(0,0%,0%,1)';
+        function draw() {
+            a.globalCompositeOperation = 'source-over';
+            a.fillStyle = 'hsla(0,0%,0%,.1)';
+            a.fillRect(0, 0, can.width, can.height);
+            var i;
+            var b = Math.sin(time) * Math.PI * 2;
+            for (i=0; i<400; ++i) {
+                var c = Math.sin(b * i) * 400;
+                a.globalCompositeOperation = '';
+                a.fillStyle = 'hsla(' + i + 12 + ',100%, 60%,1)';
+                a.beginPath();
+                a.arc(Math.sin(i) * c + (can.width / 2), 
+                    Math.cos(i) * c + (can.height / 2), 
+                    1.5, 0, Math.PI * 2);
+                a.fill();
+            }
+            time += 0.00005;
+            return time %= Math.PI * 2;
+        }
+        function run() {
+            window.requestAnimationFrame(run);
+            draw();
+        }
+        run();
+        //alert('Désolé, vous ne pouvez pas accéder à la page escomptée !');
+    </script>
+    <script>
+        swal({
+            title : 'Error',
+            text : "You can't access the requested page ! Feel free to enjoy this little animation and return to your previous page ;)",
+            icon : 'error',
+        });
+    </script>
+</body>
+</html>

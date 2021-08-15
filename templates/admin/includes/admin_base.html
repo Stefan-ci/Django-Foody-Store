@@ -1,0 +1,48 @@
+{% load i18n %}
+{% load static %}
+{% load humanize %}
+{% load hitcount_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="language" content="English">
+	<meta name="robots" content="nofollow">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="author" content="Created by 'Stefan_ci' (GitHub) ">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+	<title>
+		{% block title %}{% endblock title %}
+	</title>
+
+	{% block links %}
+	{% include 'admin/includes/admin_style_links.html' %}
+	{% endblock links %}    
+	
+	{% include 'public/includes/favicon.html' %}
+
+	{% block extra_head %}{% endblock extra_head %}
+</head>
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+
+	{% include 'admin/includes/admin_navbar.html' %}
+	
+	<!-- Content Wrapper. Contains page content -->
+	<div class="content-wrapper">
+		{% block content %}{% endblock content %}
+		{% block extra_content %} {% endblock extra_content %}
+
+		{% block footer %}
+		{% include 'admin/includes/admin_footer.html' %}
+		{% endblock footer %}
+	</div>
+	<!-- ./Content Wrapper. Contains page content -->
+
+	{% block scripts %}
+	{% include 'admin/includes/admin_scripts.html' %}
+	{% endblock scripts %}
+	
+	{% block extra_scripts %}{% endblock extra_scripts %}
+</body>
+</html>

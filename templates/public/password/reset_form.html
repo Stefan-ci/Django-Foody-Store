@@ -1,0 +1,92 @@
+{% extends 'public/includes/base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Modifiez votre mot de passe | Afro-DF Bouaké
+{% endblock title %}
+
+
+{% block extra_links %}
+    <link rel="stylesheet" href="{% static 'css/authentication.css' %}">
+{% endblock extra_links %}
+
+{% block content %}
+    
+
+    {% if messages %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-4"></div>
+            <div class="col-lg-4 col-md-4">
+                <div class="mt-5 pt-4 center-block">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    
+    <div class="container">
+        <div class="pt-5"></div>
+        <div class="row">
+            <div class="col-lg-4"></div>
+            <div class="mb-4 pt-5">
+                <div class="card" id="login">
+                    <div class="header-bar">
+                        <h2 class="text-center">Mot de passe oublié!</h2>
+                    </div>
+                    <div class="card-body">
+                    	{% if validlink %}
+                        <form method="POST" class="login">
+                            {% csrf_token %}
+
+                            <label>
+                                Nouveau mot de passe
+                            </label>
+                            {{ form.new_password1 }}<br>
+
+                            {% if form.new_password1.errors %}
+                            <p>
+                            	{{ form.new_password1.errors }}
+                            </p>
+                            {% endif %}
+
+                            <label>
+                                Confirmer le mot de passe
+                            </label>
+                            {{ form.new_password2 }}<br>
+
+                            {% if form.new_password2.errors %}
+                            <p>
+                            	{{ form.new_password2.errors }}
+                            </p>
+                            {% endif %}
+                            
+
+                            <input type="submit" class="btn btn-primary mt-4" value="Modifier" />
+                            <hr>
+                        </form>
+                        {% else %}
+                        <div class="alert alert-danger show fade" role="alert">
+                         	<p>
+                         		Oops, il semblerait que ce lien de réinitialisation soit invalide, il a probablement été utilisé. Vous devriez demander un nouveau <a href="{% url 'reset_password' %}">lien de réinitialisation</a> de votre mot de passe!
+                         	</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block footer %}{% endblock footer %}

@@ -1,0 +1,56 @@
+	{% load static %}
+	<nav class="navbar navbar-default">
+		<div class="container">
+		    <div class="navbar-header">
+		      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+		        <span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+		    </div> <!-- End of /.navbar-header -->
+
+		    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+		      	<ul class="nav navbar-nav nav-main">
+		        	<li class="{% if request.path_info == '/' %}active{% endif %}">
+		        		<a href="{% url 'home' %}">
+		        			Home 
+		        		</a>
+		        	</li>
+					<li class="{% if request.path_info == '/foods/' %}active{% endif %}">
+						<a href="{% url 'food-list' %}">
+							Foods
+						</a>
+					</li>
+					{% if request.user.is_authenticated %}
+					<li class="{% if request.path_info == '/order/summary/' %}active{% endif %}">
+						<a href="{% url 'order-summary' %}">
+							<small class="badge badge-danger z-depth-1 mr-1">
+								{{ request.user.profil.cart_item_count }}
+							</small>
+							<span>
+								<i class="fa fa-shopping-cart"></i>
+							</span>
+						</a>
+					</li>
+					<li>
+						<a href="{% url 'logout' %}">
+							Logout
+						</a>
+					</li>
+					{% else %}
+					<li class="{% if request.path_info == '/user/login/' %}active{% endif %}">
+						<a href="{% url 'login' %}">
+							Login
+						</a>
+					</li>
+					{% endif %}
+					<li class="{% if request.path_info == '/contact-us/' %}active{% endif %}">
+						<a href="{% url 'contact' %}">
+							Contact us
+						</a>
+					</li>
+		        </ul> <!-- End of /.nav-main -->
+		    </div>	<!-- /.navbar-collapse -->
+		</div>	<!-- /.container-fluid -->
+	</nav>	<!-- End of /.nav -->

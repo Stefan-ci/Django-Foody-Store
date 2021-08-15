@@ -1,0 +1,242 @@
+{% extends 'public/includes/base.html' %}
+
+{% load i18n %}
+{% load static %}
+{% load humanize %}
+{% load hitcount_tags %}
+
+{% block seo %}
+	<meta name="keywords" content="">
+	<meta name="title" content="Foods 😋😋 | Foody">
+	<meta name="description" content="">
+	<meta property="og:title" content="">
+	<meta property="og:url" content="{{ current_site }}{{ request.path }}">
+	<meta property="og:description" content="Foods 😋😋 | Foody">
+	<meta property="og:image" content="">
+{% endblock seo %}
+
+{% block title %}
+		{{item.title}} 😋😋 | Foody 
+{% endblock title %}
+
+{% block extra_head %}{% endblock extra_head %}
+
+
+{% block content %}
+
+	{% if messages %}
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-4 col-md-4"></div>
+			<div class="col-lg-4 col-md-4">
+				<div class="mt-5 pt-4 center-block">
+	    		{% for message in messages %}
+	    		    <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
+	    		        {{ message }}
+	    		        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	    		            <span aria-hidden="true">&times;</span>
+	    		        </button>
+	    		    </div>
+	    		{% endfor %}
+		    	</div>
+			</div>
+	    </div>
+	</div>
+	{% endif %}
+
+
+	
+	<section id="topic-header">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4">
+					<h1>FOODY</h1>
+				</div>	<!-- End of /.col-md-4 -->
+				<div class="col-md-8">
+					<ol class="breadcrumb pull-right">
+					  	<li><a href="{% url 'home' %}">Home</a></li>
+					  	<li><a href="{% url 'food-list' %}">Foods</a></li>
+					  	<li class="active">{{ item.title }}</li>
+					</ol>
+				</div>	<!-- End of /.col-md-8 -->
+			</div>	<!-- End of /.row -->
+		</div>	<!-- End of /.container -->
+	</section>	<!-- End of /#Topic-header -->
+
+
+	<section id="blog">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-9 clearfix">
+					<ul class="blog-zone pb-4">
+					    <li>
+					        <div class="blog-icon">
+					        	<i class="fa  fa-pencil"></i>
+					        </div>
+					        <div class="blog-box">
+					        	<img src="{{ item.picture.url }}" alt="{{ item.title }}" title="{{ item.title }}">
+					            
+					            <div class="blog-post-body clearfix">
+
+					            	<p class="text-center">
+					            		{% if item.price == 0.0 %}<h4 class="text-info text-center">Free</h4> {% else %}{% if item.discount_price %}<small class="text-muted"><del>$ {{item.price}}</del></small> <h4 class="text-primary text-center">$ {{item.discount_price}}</h4>{% else %}<h4 class="text-primary text-center">$ {{item.price}}</h4>{% endif %}{% endif %}
+					            	</p>
+
+
+
+					            	<h2>{{ item.title }}</h2>
+					            	
+					            	{% if request.user.is_superuser %}<small class="text-danger">{% get_hit_count for item %} views !</small>{% endif %}
+					            	
+					            	<p>
+					            		{{ item.description | safe | linebreaks }} 
+					            	</p>
+					            	{% if item.picture_2 or item.picture_3 %}
+					            	<div class="row">
+					            		{% if item.picture_2 %}
+					            		<div class="col-md-3">
+					            			<p class="text-center">
+					            				<img class="img-fluid" src="{{ item.picture_2.url }}" alt="{{ item.title }}" title="{{ item.title }}">
+					            			</p>
+					            		</div>
+					            		{% endif %}
+					            		{% if item.picture_3 %}
+					            		<div class="col-md-3">
+					            			<p class="text-center">
+					            				<img class="img-fluid" src="{{ item.picture_3.url }}" alt="{{ item.title }}" title="{{ item.title }}">
+					            			</p>
+					            		</div>
+					            		{% endif %}
+					            	</div>
+					            	{% endif %}
+					            	<p class="text-center">
+					            		<a class="btn btn-info btn-block" href="{{ item.get_add_to_cart_url }}">
+					            			<i class="fa fa-plus-circle"></i>
+					            			Add this item to your cart
+					            		</a>
+					            	</p>
+						        </div>
+						    </div>
+						</li>
+					</ul>
+
+					{% if similar_items %}
+					<div class="products-heading mt-4">
+						<h2>You would also like these foods</h2>
+					</div>
+
+					<div class="row">
+						{% for similar_item in similar_items %}
+						<div class="col-md-4">
+							<div class="products">
+								<a href="{% url 'food-detail' similar_item.id similar_item.slug %}">
+									<img src="{{similar_item.picture.url}}" alt="{{similar_item.title}}" title="{{similar_item.title}}">
+								</a>
+								<a href="{% url 'food-detail' similar_item.id similar_item.slug %}">
+									<h6>
+										{{similar_item.title}}
+									</h6>
+								</a>
+								{% if similar_item.price == 0.0 %}
+								<p class="price">
+									Free
+								</p>
+								{% else %}
+								<p class="price">
+									$ {{similar_item.price}}
+								</p>
+								{% endif %}
+								<a class="view-link shutter" href="{{ similar_item.get_add_to_cart_url }}">
+									<i class="fa fa-plus-circle"></i>
+									Add this to your cart
+								</a>
+							</div>	<!-- End of /.products -->
+						</div>	<!-- End of /.col-md-3 -->
+					{% endfor %}
+					</div>
+					{% endif %}
+
+				
+				</div> <!-- End of /.col-md-9 -->
+
+
+				<div class="col-md-3">
+					<div class="blog-sidebar">
+						
+						<div class="block">
+							<h4>Tags</h4>
+							<div class="tag-link">
+								{% for tag in item.tags.all %}
+								<a href="#">
+									{{tag}}
+								</a>
+								{% endfor %}
+							</div>	
+						</div>	<!-- End of /.block -->
+
+						<div class="block">
+							<h4>Food's catagory</h4>
+							<div class="list-group">
+								<a href="{% url 'food-category' item.category %}" class="list-group-item">
+									<i class="fa  fa-dot-circle-o"></i>
+									{{ item.category }}
+								</a>
+							</div>
+						</div>	<!-- End of /.block -->
+
+						{% if popular_items %}
+						<div class="block">
+							<h4>Popular foods</h4>
+							<ul class="media-list">
+							 	{% for popular_food in popular_items %}
+							 	<li class="media">
+							    	<a class="pull-left" href="{% url 'food-detail' popular_food.id popular_food.slug %}">
+							      		<img class="media-object" src="{{ popular_food.picture.url }}" alt="{{ popular_food.title }}" title="{{ popular_food.title }}">
+							    	</a>
+							    	<div class="media-body">
+							      		<a href="{% url 'food-detail' popular_food.id popular_food.slug %}" class="media-heading">
+							      			{{ popular_food.title }}
+							      		</a>
+							    	</div>
+							  	</li>
+							  	{% endfor %}
+							  </ul>
+						</div>	<!-- End of /.block -->
+						{% endif %}
+
+						{% if most_recent_items %}
+						<div class="block">
+							<h4>Most recent added foods</h4>
+							<ul class="media-list">
+							 	{% for most_recent_food in most_recent_items %}
+							 	<li class="media">
+							    	<a class="pull-left" href="{% url 'food-detail' most_recent_food.id most_recent_food.slug %}">
+							      		<img class="media-object" src="{{ most_recent_food.picture.url }}" alt="{{ most_recent_food.title }}" title="{{ most_recent_food.title }}">
+							    	</a>
+							    	<div class="media-body">
+							      		<a href="" class="media-heading">
+							      			{{ most_recent_food.title }}
+							      		</a>
+							    	</div>
+							  	</li>
+							  	{% endfor %}
+							  </ul>
+						</div>	<!-- End of /.block -->
+						{% endif %}
+					
+					</div>
+				</div>
+
+
+			</div>
+		</div>
+	</section>
+
+{% endblock content %}
+
+
+{% block header_search %}
+    {% include 'public/includes/site_header_without_search.html' %}
+{% endblock header_search %}
+
+{% block footer %}{% endblock footer %}

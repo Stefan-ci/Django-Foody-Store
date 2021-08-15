@@ -1,0 +1,3 @@
+User-Agent: *
+
+Sitemap: http://stefan-foody.herokuapp.com/sitemap.xml

@@ -1,0 +1,132 @@
+{% extends 'public/includes/base.html' %}
+
+{% load i18n %}
+{% load static %}
+{% load humanize %}
+{% load hitcount_tags %}
+
+{% block seo %}
+	<meta name="keywords" content="">
+	<meta name="title" content="">
+	<meta name="description" content="">
+	<meta property="og:title" content="">
+	<meta property="og:url" content="{{ current_site }}{{ request.path }}">
+	<meta property="og:description" content="">
+	<meta property="og:image" content="">
+{% endblock seo %}
+
+{% block title %}
+		Order summary 😋😋 | Foody 
+{% endblock title %}
+
+{% block extra_head %}{% endblock extra_head %}
+
+
+
+{% block content %}
+    
+    {% if messages %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-4"></div>
+            <div class="col-lg-4 col-md-4">
+                <div class="mt-5 pt-4 center-block">
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
+                        {{ message }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+  <main>
+    <div class="container">
+    {% if order %}
+    <div class="table-responsive text-nowrap">
+    <h2>Order Summary</h2>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Item title</th>
+            <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Total Item Price</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for order_item in order.items.all %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ order_item.item.title }}</td>
+            <td>{{ order_item.item.price }}</td>
+            <td>
+                <a href="{% url 'remove-single-food-from-cart' order_item.item.id order_item.item.slug %}"><i class="fa fa-minus mr-2"></i></a>
+                {{ order_item.quantity }}
+                <a href="{% url 'add-food-to-cart' order_item.item.id order_item.item.slug %}"><i class="fa fa-plus ml-2"></i></a>
+            </td>
+            <td>
+            
+            {% if order_item.item.discount_price %}
+                ${{ order_item.get_total_discount_item_price }}
+                <span class="ml-2 badge badge-primary">Discount of ${{ order_item.get_amount_saved }}</span>
+            {% else %}
+                ${{ order_item.get_total_item_price }}
+            {% endif %}
+            <a style='color: red;' href="#">
+                <i class="fas fa-trash float-right"></i>
+            </a>
+            </td>
+        </tr>
+        {% endfor %}
+
+        {% if order.coupon %}
+        <tr>
+            <td colspan="4"><b>Coupon</b></td>
+            <td><b>-${{ order.coupon.amount }}</b></td>
+        </tr>
+        {% endif %}
+
+
+        {% if order.get_total %}
+        <tr class="pt-3">
+            <td colspan="4"><h4>Order Total</h4></td>
+            <td><h4>${{ order.get_total }}</h4></td>
+        </tr>
+        <tr class="text-center">
+            <td colspan="5">
+            <a class='btn btn-warning m-2' href="{% url 'checkout' %}">Proceed to checkout</a>
+            <a class='btn btn-primary' href="{% url 'food-list' %}">Continue shopping</a>
+            </td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="text-center">
+            <p>
+                No order yet ! <a href="{% url 'food-list' %}" class="btn btn-primary">
+                    back to shopping
+                </a>
+            </p>
+        </div>
+    </div>
+    {% endif %}
+    </div>
+  </main>
+{% endblock content %}
+
+{% block header_search %}
+    {% include 'public/includes/site_header_without_search.html' %}
+{% endblock header_search %}
+
+{% block footer %}{% endblock footer %}

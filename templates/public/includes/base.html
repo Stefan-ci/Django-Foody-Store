@@ -1,0 +1,62 @@
+{% load i18n %}
+{% load static %}
+{% load humanize %}
+{% load hitcount_tags %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="language" content="English">
+    <meta name="robots" content="all">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="author" content="Created by 'Stefan_ci' (GitHub) ">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+
+    {% block seo %}
+    <meta name="keywords" content="">
+    <meta name="title" content="">
+    <meta name="description" content="">
+    <meta property="og:title" content="">
+    <meta property="og:url" content="{{ request.path }}">
+    <meta property="og:description" content="">
+    <meta property="og:image" content="">
+    {% endblock seo %}
+
+    <title>
+		{% block title %}{% endblock title %}
+	</title>
+    
+    {% block links %}
+    {% include 'public/includes/style_links.html' %}
+    {% endblock links %}    
+    
+    {% include 'public/includes/favicon.html' %}
+
+    {% block extra_head %}{% endblock extra_head %}
+</head>
+    
+<body>
+    {% block header_search %}
+    {% include 'public/includes/site_header_with_search.html' %}
+    {% endblock header_search %}
+    
+    {% include 'public/includes/navbar.html' %}
+	
+    {% block content %} {% endblock content %}
+	
+    {% block extra_content %} {% endblock extra_content %}
+    
+    {% block footer %}
+    {% include 'public/includes/main_footer.html' %}
+    {% endblock footer %}
+
+    {% block scripts %}
+    {% include 'public/includes/scripts.html' %}
+    {% endblock scripts %}
+    
+    {% block extra_scripts %}{% endblock extra_scripts %}
+    
+</body>
+</html>

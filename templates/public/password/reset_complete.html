@@ -1,0 +1,53 @@
+{% extends 'public/includes/base.html' %}
+
+{% load static %}
+
+{% block title %}
+    Mot de passe réinitialisé | Afro-DF Bouaké
+{% endblock title %}
+
+{% block content %}
+
+	{% if messages %}
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-4 col-md-4"></div>
+			<div class="col-lg-4 col-md-4">
+				<div class="mt-5 pt-4 center-block">
+	    		{% for message in messages %}
+	    		    <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
+	    		        {{ message }}
+	    		        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	    		            <span aria-hidden="true">&times;</span>
+	    		        </button>
+	    		    </div>
+	    		{% endfor %}
+		    	</div>
+			</div>
+	    </div>
+	</div>
+	{% endif %}
+
+	
+	<div class="container pt-5">
+        <div class="row pt-5">
+        	<div class="offset-lg-3 col-lg-6">
+        		<div class="center-text">
+		        	<div class="alert alert-success show fade" role="alert">
+		        	 	<p>
+		        	 		Mot de passe réinitialisé avec succès. Vous pouvez vous <a href="{% url 'login' %}">connecter</a> à nouveau avec votre nouveau mot de passe!
+		        	 	</p>
+		        	</div>
+		        	<br>
+		        	<a class="btn btn-outline-success btn-sm btn-block" href="{% url 'home' %}">
+		        		Page d'accueil
+		        	</a>
+				</div>
+        	</div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block footer %}
+    {% include 'public/includes/tiny_footer.html' %}
+{% endblock footer %}

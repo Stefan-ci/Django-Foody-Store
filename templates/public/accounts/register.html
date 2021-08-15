@@ -1,0 +1,148 @@
+{% extends 'public/includes/base.html' %}
+
+{% load i18n %}
+{% load static %}
+{% load humanize %}
+{% load hitcount_tags %}
+
+
+{% block seo %}
+	<meta name="keywords" content="">
+	<meta name="title" content="Login to your Foody account">
+	<meta name="description" content="">
+	<meta property="og:title" content="Login to your Foody account">
+	<meta property="og:url" content="{{ current_site }}{{ request.path }}">
+	<meta property="og:description" content="">
+	<meta property="og:image" content="">
+{% endblock seo %}
+
+{% block title %}
+		Create a new Foody account 😋😋 | Foody 
+{% endblock title %}
+
+{% block extra_head %}{% endblock extra_head %}
+
+
+
+{% block content %}
+	{% if messages %}
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-4 col-md-4"></div>
+			<div class="col-lg-4 col-md-4">
+				<div class="mt-5 pt-4 center-block">
+	    		{% for message in messages %}
+	    		    <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
+	    		        {{ message }}
+	    		        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	    		            <span aria-hidden="true">&times;</span>
+	    		        </button>
+	    		    </div>
+	    		{% endfor %}
+		    	</div>
+			</div>
+	    </div>
+	</div>
+	{% endif %}
+
+	<section id="blog">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-2"></div>
+				<div class="col-md-8 clearfix">
+					<div class="leave-comment">
+						<h5 class="text-center pb-3">SIGN UP TO <strong class="text-info">FOODY</strong> RIGHT NOW</h5>
+						<form method="POST" class="form-horizontal" role="form">
+							{% csrf_token %}
+							<div class="form-group">
+								{% if form.uername.errors %}
+								<div class="mt-1 mb-1 ml-4 mr-2">
+									<ol>
+										<li class="text-danger">
+											<small>
+												{{ form.uername.errors }}
+											</small>
+										</li>
+									</ol>
+								</div>
+								{% endif %}
+						    	<label for="inputname" class="col-sm-2 control-label">Username</label>
+							    <div class="col-sm-10">
+							      {{form.username}}
+							    </div>
+						  	</div>	<!-- End of /.form-group -->
+						  	<div class="form-group">
+						  		{% if form.email.errors %}
+								<div class="mt-1 mb-1 ml-4 mr-2">
+									<ol>
+										<li class="text-danger">
+											<small>
+												{{ form.email.errors }}
+											</small>
+										</li>
+									</ol>
+								</div>
+								{% endif %}
+						    	<label for="inputname" class="col-sm-2 control-label">Email address</label>
+							    <div class="col-sm-10">
+							      	{{form.email}}
+							    </div>
+						  	</div>	<!-- End of /.form-group -->
+						  	<div class="form-group">
+						  		{% if form.password1.errors %}
+								<div class="mt-1 mb-1 ml-4 mr-2">
+									<ol>
+										<li class="text-danger">
+											<small>
+												{{ form.password1.errors }}
+											</small>
+										</li>
+									</ol>
+								</div>
+								{% endif %}
+						    	<label for="inputPassword" class="col-sm-2 control-label">Password</label>
+							    <div class="col-sm-10">
+							      {{form.password1}}
+							    </div>
+						  	</div>	<!-- End of /.form-group -->
+						  	<div class="form-group">
+						  		{% if form.password2.errors %}
+								<div class="mt-1 mb-1 ml-4 mr-2">
+									<ol>
+										<li class="text-danger">
+											<small>
+												{{ form.password2.errors }}
+											</small>
+										</li>
+									</ol>
+								</div>
+								{% endif %}
+						    	<label for="inputPassword" class="col-sm-2 control-label">Confirm password</label>
+							    <div class="col-sm-10">
+							      	{{form.password2}}
+							    </div>
+						  	</div>	<!-- End of /.form-group -->
+							<div class="form-group">
+						    	<div class="col-sm-offset-2 col-sm-10">
+						      		<button type="submit" class="btn btn-primary btn-block mb-4 mt-4">Register now</button>
+						    	</div>
+						  	</div>	<!-- End of /.form-group -->
+						</form>	<!-- End of /.form-horizontal -->
+						Already registered ? 
+						<a class="f-small" href="{% url 'login' %}">
+							Login
+						</a>
+					</div>	<!-- End of /.leave comments -->
+				</div> <!-- End of /.col-md-9 -->
+			</div>
+		</div>
+	</section>
+{% endblock content %}
+
+{% block header_search %}
+    {% include 'public/includes/site_header_without_search.html' %}
+{% endblock header_search %}
+
+{% block extra_scripts %}{% endblock extra_scripts %}
+
+{% block footer %}{% endblock footer %}
