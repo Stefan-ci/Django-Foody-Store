@@ -22,20 +22,126 @@ from django.urls import reverse_lazy
 
 from django.core.exceptions import ObjectDoesNotExist
 from hitcount.views import HitCountDetailView
+from notifications.models import Notification
+from notifications import settings as notif_settings
 from django.conf import settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 
 
+from hitcount.models import HitCount, Hit
+
+
+import datetime
+today_date = datetime.date.today()
+yesterday = today_date - datetime.timedelta(days=1)
+this_week = today_date - datetime.timedelta(days=7)
+this_month = today_date - datetime.timedelta(days=30)
+
+
+
+from products.models import Item
+from coupon.models import Coupon
+from orders.models import OrderItem, Order
+from addresses.models import Address
+from profil.models import Profil
+from reports.models import Sales, Expenses
+from payments.models import Payment
+from website.utils import update_views
+from reports.reports_utils import expenses_made, sales_made, monthly_sales, monthly_expenses
+from coupon.coupon_forms import CouponForm
 from website.decorators import unauthenticated_user, admin_only, allowed_users
+from profil.forms import CreateUserForm, EditUserForm
+from contacts.forms import ContactForm
+from refunds.models import Refund
+from refunds.refund_forms import RefundForm
+from orders.orders_forms import CheckoutForm
+from payments.forms import PaymentForm
 
 
 
+complete_orders_list = Order.objects.filter(ordered=True)
+complete_orders_count = Order.objects.filter(ordered=True).count()
 
+not_complete_orders_list = Order.objects.filter(ordered=False)
+not_complete_orders_count = Order.objects.filter(ordered=False).count()
+
+total_hits = Hit.objects.all().count()
+
+new_added_items_count = Item.objects.filter(date__month=8).count()
+
+total_items_count = Item.objects.all().count()
 
 lambda_users_count = User.objects.filter(is_staff=False).count()
 superusers_count = User.objects.filter(is_superuser=True).count()
 staff_users_count = User.objects.filter(is_staff=True).count()
 users_count = User.objects.all().count()
+
+orders_list = Order.objects.all().order_by('-id')[:100]
+total_orders_count = Order.objects.all().count()
+
+
+# Sales' annual chart reports data (getting by month)
+# Sale means that payment done successfully. So we will work with `Payment` model
+jan_sale = Payment.objects.filter(date__month=1).count()
+feb_sale = Payment.objects.filter(date__month=2).count()
+march_sale = Payment.objects.filter(date__month=3).count()
+apr_sale = Payment.objects.filter(date__month=4).count()
+may_sale = Payment.objects.filter(date__month=5).count()
+jun_sale = Payment.objects.filter(date__month=6).count()
+jul_sale = Payment.objects.filter(date__month=7).count()
+aug_sale = Payment.objects.filter(date__month=8).count()
+sept_sale = Payment.objects.filter(date__month=9).count()
+oct_sale = Payment.objects.filter(date__month=10).count()
+nov_sale = Payment.objects.filter(date__month=11).count()
+dec_sale = Payment.objects.filter(date__month=12).count()
+
+
+
+
+jan_expense = Expenses.objects.filter(date__month=1).count()
+feb_expense = Expenses.objects.filter(date__month=2).count()
+march_expense = Expenses.objects.filter(date__month=3).count()
+apr_expense = Expenses.objects.filter(date__month=4).count()
+may_expense = Expenses.objects.filter(date__month=5).count()
+jun_expense = Expenses.objects.filter(date__month=6).count()
+jul_expense = Expenses.objects.filter(date__month=7).count()
+aug_expense = Expenses.objects.filter(date__month=8).count()
+sept_expense = Expenses.objects.filter(date__month=9).count()
+oct_expense = Expenses.objects.filter(date__month=10).count()
+nov_expense = Expenses.objects.filter(date__month=11).count()
+dec_expense = Expenses.objects.filter(date__month=12).count()
+
+
+
+
+
+
+# Users' annual chart reports data (getting by month)
+jan_user = User.objects.filter(date_joined__month=1).count()
+feb_user = User.objects.filter(date_joined__month=2).count()
+march_user = User.objects.filter(date_joined__month=3).count()
+apr_user = User.objects.filter(date_joined__month=4).count()
+may_user = User.objects.filter(date_joined__month=5).count()
+jun_user = User.objects.filter(date_joined__month=6).count()
+jul_user = User.objects.filter(date_joined__month=7).count()
+aug_user = User.objects.filter(date_joined__month=8).count()
+sept_user = User.objects.filter(date_joined__month=9).count()
+oct_user = User.objects.filter(date_joined__month=10).count()
+nov_user = User.objects.filter(date_joined__month=11).count()
+dec_user = User.objects.filter(date_joined__month=12).count()
+
+
+
+total_sales_made = sales_made()
+total_expenses_made = expenses_made()
+total_profits_made = total_sales_made - total_expenses_made
+
+
+
+
+
+
+
 
 
 
@@ -44,14 +150,176 @@ users_count = User.objects.all().count()
 def admin_home_view(request):
 	
 	context = {
+
+		'jan_sale' : jan_sale,
+		'feb_sale' : feb_sale,
+		'march_sale' : march_sale,
+		'apr_sale' : apr_sale,
+		'may_sale' : may_sale,
+		'jun_sale' : jun_sale,
+		'jul_sale' : jun_sale,
+		'aug_sale' : aug_sale,
+		'sept_sale' : sept_sale,
+		'oct_sale' : oct_sale,
+		'nov_sale' : nov_sale,
+		'dec_sale' : dec_sale,
+
+		'jan_expense' : jan_expense,
+		'feb_expense' : feb_expense,
+		'march_expense' : march_expense,
+		'apr_expense' : apr_expense,
+		'may_expense' : may_expense,
+		'jun_expense' : jun_expense,
+		'jul_expense' : jun_expense,
+		'aug_expense' : aug_expense,
+		'sept_expense' : sept_expense,
+		'oct_expense' : oct_expense,
+		'nov_expense' : nov_expense,
+		'dec_expense' : dec_expense,
+
+		'jan_user' : jan_user,
+		'feb_user' : feb_user,
+		'march_user' : march_user,
+		'apr_user' : apr_user,
+		'may_user' : may_user,
+		'jun_user' : jun_user,
+		'jul_user' : jun_user,
+		'aug_user' : aug_user,
+		'sept_user' : sept_user,
+		'oct_user' : oct_user,
+		'nov_user' : nov_user,
+		'dec_user' : dec_user,
+
+
+		'jan_sale_amount' : monthly_sales(1),
+		'feb_sale_amount' : monthly_sales(2),
+		'march_sale_amount' : monthly_sales(3),
+		'apr_sale_amount' : monthly_sales(4),
+		'may_sale_amount' : monthly_sales(5),
+		'jun_sale_amount' : monthly_sales(6),
+		'jul_sale_amount' : monthly_sales(7),
+		'aug_sale_amount' : monthly_sales(8),
+		'sept_sale_amount' : monthly_sales(9),
+		'oct_sale_amount' : monthly_sales(10),
+		'nov_sale_amount' : monthly_sales(11),
+		'dec_sale_amount' : monthly_sales(12),
+
+
+
+		'jan_expense_amount' : monthly_expenses(1),
+		'feb_expense_amount' : monthly_expenses(2),
+		'march_expense_amount' : monthly_expenses(3),
+		'apr_expense_amount' : monthly_expenses(4),
+		'may_expense_amount' : monthly_expenses(5),
+		'jun_expense_amount' : monthly_expenses(6),
+		'jul_expense_amount' : monthly_expenses(7),
+		'aug_expense_amount' : monthly_expenses(8),
+		'sept_expense_amount' : monthly_expenses(9),
+		'oct_expense_amount' : monthly_expenses(10),
+		'nov_expense_amount' : monthly_expenses(11),
+		'dec_expense_amount' : monthly_expenses(12),
+
+		'total_hits' : total_hits,
 		'users_count' : users_count,
+		'total_sales_made' : total_sales_made,
+		'total_profits_made' : total_profits_made,
 		'superusers_count' : superusers_count,
+		'total_expenses_made' : total_expenses_made,
+		'total_items_count' : total_items_count,
 		'staff_users_count' : staff_users_count,
 		'lambda_users_count' : lambda_users_count,
 		'current_site' : get_current_site(request),
+		'complete_orders_count' : complete_orders_count,
+		'new_added_items_count' : new_added_items_count,
+		'not_complete_orders_count' : not_complete_orders_count,
+		'orders_list' : Order.objects.all().order_by('-id')[:10],
 	}
 
 	template_name = 'admin/admin_home.html'
 	return render(request, template_name, context)
+
+
+
+
+
+
+
+
+
+
+
+
+@login_required(login_url='login')
+@admin_only
+def orders_list_view(request):
+
+	if 'search' in request.GET:
+		order = request.GET['search']
+		orders_list = Order.objects.filter(user__username__icontains=order).order_by('-id')
+	else:
+		orders_list = Order.objects.all().order_by('-id')[:100]
+
+	paginator = Paginator(orders_list, 100)
+	page = request.GET.get("page")
+	orders_obj = paginator.get_page(page)
+
+	try:
+		orders_list = paginator.page(page)
+	except PageNotAnInteger:
+		orders_list = paginator.page(1)
+	except EmptyPage:
+		orders_list = paginator.page(paginator.num_pages)
+		
+
+	context = {
+		'orders_list' : orders_obj,
+		'current_site' : get_current_site(request),
+	}
+
+	template_name = 'admin/tables/orders.html'
+	return render(request, template_name, context)
+
+
+
+
+
+
+
+
+@login_required(login_url='login')
+@admin_only
+def admin_inbox_view(request):
+	
+	context = {}
+
+	template_name = 'admin/inbox/admin_inbox.html'
+	return render(request, template_name, context)
+
+
+
+
+
+
+
+
+@login_required(login_url='login')
+@admin_only
+def mark_all_as_delete(request):
+	notifications = Notification.objects.filter(recipient=request.user)
+	for notification in notifications:
+		if notif_settings.get_config()['SOFT_DELETE']:
+			notification.deleted = True
+			notification.save()
+		else:
+			notification.delete()
+	_next = request.GET.get('next')
+	if _next:
+		return redirect(_next)
+	return redirect('admin-inbox')
+
+
+
+
+
 
 

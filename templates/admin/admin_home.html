@@ -7,15 +7,15 @@
 
 
 {% block title %}
-	Administraion 2 | Foody
+	Foody Administraion 2 | Foody
 {% endblock title %}
 
 
 {% block content %}
 		<!-- Content Header (Page header) -->
-		<div class="content-header">
+		<div class="content-header pt-5 mt-5">
 			<div class="container-fluid">
-				<div class="row mb-2">
+				<div class="row mb-4">
 					<div class="col-sm-6">
 						<h1 class="m-0 text-dark">Admin Dashboard</h1>
 					</div>
@@ -47,7 +47,7 @@
 									Site Traffic
 								</small>
 								<span class="info-box-number">
-									10/hr
+									{{total_hits}}
 								</span>
 							</div>
 						</div>
@@ -63,7 +63,7 @@
 									Pending orders
 								</small>
 								<span class="info-box-number">
-									10
+									{{not_complete_orders_count}}
 								</span>
 							</div>
 						</div>
@@ -82,7 +82,7 @@
 									Complete orders
 								</small>
 								<span class="info-box-number">
-									10
+									{{complete_orders_count}}
 								</span>
 							</div>
 						</div>
@@ -98,7 +98,7 @@
 									Members
 								</small>
 								<span class="info-box-number">
-									10
+									{{users_count}}
 								</span>
 							</div>
 						</div>
@@ -111,14 +111,14 @@
 					<div class="col-12 col-sm-6 col-md-4">
 						<div class="info-box mb-3">
 							<span class="info-box-icon bg-danger elevation-1">
-								<i class="fas fa-shopping-cart"></i>
+								<i class="fas fa-dollar-sign"></i>
 							</span>
 							<div class="info-box-content">
 								<small class="info-box-text">
 									Money spent
 								</small>
 								<span class="info-box-number">
-									$ 1000
+									$ {{total_expenses_made}}
 								</span>
 							</div>
 						</div>
@@ -129,15 +129,15 @@
 
 					<div class="col-12 col-sm-6 col-md-4">
 						<div class="info-box mb-3">
-							<span class="info-box-icon bg-success elevation-1">
-								<i class="fas fa-shopping-cart"></i>
+							<span class="info-box-icon bg-info elevation-1">
+								<i class="fas fa-dollar-sign"></i>
 							</span>
 							<div class="info-box-content">
 								<small class="info-box-text">
 									Sales made
 								</small>
 								<span class="info-box-number">
-									$ 10000
+									$ {{total_sales_made}}
 								</span>
 							</div>
 						</div>
@@ -145,15 +145,15 @@
 
 					<div class="col-12 col-sm-6 col-md-4">
 						<div class="info-box mb-3">
-							<span class="info-box-icon bg-info elevation-1">
-								<i class="fas fa-users"></i>
+							<span class="info-box-icon bg-{% if total_profits_made >= 0 %}success{% else %}danger{% endif %} elevation-1">
+								<i class="fas fa-dollar-sign"></i>
 							</span>
 							<div class="info-box-content">
 								<small class="info-box-text">
 									Profits
 								</small>
 								<span class="info-box-number">
-									$ 9000
+									$ {{total_profits_made}}
 								</span>
 							</div>
 						</div>
@@ -172,7 +172,7 @@
 							<!-- card-header -->
 							<div class="card-header">
 								<h5 class="card-title">
-									Monthly Sales Report
+									Annual Sales Report
 								</h5>
 								<div class="card-tools">
 									<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -183,52 +183,54 @@
 
 							<div class="card-body">
 								<div class="row">
-									<div class="col-md-8">
+									<div class="col-md-9">
 										<p class="text-center">
 											<strong>
-												Sales: 1 Jan, 2014 - 30 Jan, 2014
+												Sales: 1 Jan - 31 Dec <script>document.write(new Date().getFullYear());</script>
 											</strong>
 										</p>
 										<div class="chart">
 											<!-- Sales Chart Canvas -->
-											<canvas id="salesChart" height="250" style="max-height: 250;"></canvas>
+											<canvas id="salesChart" height="350" style="max-height: 350;"></canvas>
 										</div>
 										<!-- /.chart-responsive -->
 									</div>
-									<div class="col-md-4">
+									<div class="col-md-3">
 										<p class="text-center">
 											<strong>
 												Store's stats
 											</strong>
 										</p>
 										<div class="progress-group text-primary">
-											New items added
+											<small>Monthly added items</small>
 											<span class="float-right">
-												<b>15</b> 
+												<b>
+													{{new_added_items_count}}
+												</b> 
 											</span>
 										</div>
 										<div class="progress-group text-success">
-											Complete orders
+											<small>Complete orders</small>
 											<span class="float-right">
-												<b>15</b> 
+												<b>
+													{{complete_orders_count}}
+												</b> 
 											</span>
 										</div>
 										<div class="progress-group text-warning">
-											Pending orders
+											<small>Pending orders</small>
 											<span class="float-right">
-												<b>15</b> 
+												<b>
+													{{not_complete_orders_count}}
+												</b> 
 											</span>
 										</div>
-										<div class="progress-group text-danger">
-											PayPal sales
+										<div class="progress-group text-secondary">
+											<small>Total items</small>
 											<span class="float-right">
-												<b>15</b> 
-											</span>
-										</div>
-										<div class="progress-group text-info">
-											Stripe sales
-											<span class="float-right">
-												<b>15</b> 
+												<b>
+													{{total_items_count}}
+												</b> 
 											</span>
 										</div>
 									</div>
@@ -264,8 +266,10 @@
 
 									<div class="card-pane-right bg-success pt-2 pb-2 pl-4 pr-4">
 										<div class="description-block mb-4">
-											<h5 class="description-header">8390</h5>
-											<span class="description-text">Visits</span>
+											<h5 class="description-header">
+												{{total_hits}}
+											</h5>
+											<span class="description-text">HITS</span>
 										</div>
 									</div>
 								</div>
@@ -292,7 +296,10 @@
 											<tr>
 												<th>Order ID</th>
 												<th>User</th>
-												<th>Status</th>
+												<th>Email</th>
+												<th>Ordered</th>
+												<th>Start date</th>
+												<th>Ordered date</th>
 												<th>Being delivered</th>
 												<th>Received</th>
 												<th>Refund requested</th>
@@ -300,20 +307,83 @@
 											</tr>
 										</thead>
 										<tbody>
-											<th><a href="#">1</a></th>
-											<td>Stefan</td>
-											<td><span class="badge badge-info">Ordered</span></td>
-											<td><span class="badge badge-success">Yes</span></td>
-											<td><span class="badge badge-success">Received</span></td>
-											<td><span class="badge badge-success">Yes</span></td>
-											<td><span class="badge badge-success">Yes</span></td>
+											{% for order in orders_list %}
+											<tr>
+												<th>
+													<a href="#">
+														{{order.id}}
+													</a>
+												</th>
+												<td>
+													<small>
+														{{order.user.username}}
+													</small>
+												</td>
+												<td>
+													<small>
+														{{order.user.email}}
+													</small>
+												</td>
+												<td>
+													{% if order.ordered %}
+													<span class="badge badge-info">Ordered</span>
+													{% else %}
+													<span class="badge badge-warning">Pending</span>
+													{% endif %}
+												</td>
+												<td>
+													<small>
+														{{order.start_date|naturaltime}}
+													</small>
+												</td>
+												<td>
+													{% if order.ordered_date %}
+													<small>
+														{{order.ordered_date|naturaltime}}
+													</small>
+													{% else %}
+													<small>
+														Not ordered
+													</small>
+													{% endif %}
+												</td>
+												<td>
+													{% if order.being_delivered %}
+													<span class="badge badge-success">Yes</span>
+													{% else %}
+													<span class="badge badge-danger">No</span>
+													{% endif %}
+												</td>
+												<td>
+													{% if order.received %}
+													<span class="badge badge-success">Received</span>
+													{% else %}
+													<span class="badge badge-danger">Not received</span>
+													{% endif %}
+												</td>
+												<td>
+													{% if order.refund_requested %}
+													<span class="badge badge-success">Requested</span>
+													{% else %}
+													<span class="badge badge-danger">Not requested</span>
+													{% endif %}
+												</td>
+												<td>
+													{% if order.refund_granted %}
+													<span class="badge badge-success">Granted</span>
+													{% else %}
+													<span class="badge badge-danger">Not granted</span>
+													{% endif %}
+												</td>
+											</tr>
+											{% endfor %}
 										</tbody>
 									</table> <!-- /.table -->
 								</div> <!-- /.table-responsive -->
 							</div> <!-- /.card-body -->
 
 							<div class="card-footer clearfix">
-								<a href="#" class="btn btn-sm btn-secondary float-right">View All Orders</a>
+								<a href="{% url 'order-table' %}" class="btn btn-sm btn-secondary float-right">View All Orders</a>
 							</div>
 						</div>
 					</div> <!-- /.col-md-8 -->
@@ -432,7 +502,7 @@
 							<!-- card-header -->
 							<div class="card-header">
 								<h5 class="card-title">
-									Users Report
+									Users join Report
 								</h5>
 								<div class="card-tools">
 									<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -442,31 +512,27 @@
 							</div> <!-- /.card-header -->
 
 							<div class="card-body">
-								<div class="row">
-									<div class="col-md-8">
-										<p class="text-center">
-											<strong>
-												Join: 1 Jan, 2014 - 30 Jan, 2014
-											</strong>
-										</p>
-										<div class="chart">
-											<!-- Users Chart Canvas -->
-											<canvas id="visitors-chart" height="180" style="height: 180px;"></canvas>
-										</div>
-										<!-- /.chart-responsive -->
-									</div>
+								<p class="text-center">
+									<strong>
+										Users: 1 Jan - 31 Dec <script>document.write(new Date().getFullYear());</script>
+									</strong>
+								</p>
+								<div class="chart">
+									<!-- Users Chart Canvas -->
+									<canvas id="usersLineChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
 								</div>
+								<!-- /.chart-responsive -->
 							</div>
 
 						</div>
-					</div> <!-- /.col-md-8 mt-3 mb-5 -->
+					</div> <!-- /.col-md-6 mt-3 mb-5 -->
 
 					<div class="col-md-6 mt-3 mb-5">
 						<div class="card">
 							<!-- card-header -->
 							<div class="card-header">
 								<h5 class="card-title">
-									Users Donut chart
+									Users Access level chart
 								</h5>
 								<div class="card-tools">
 									<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -482,9 +548,78 @@
 								</div>
 								<!-- /.chart-responsive -->
 							</div>
-
+						</div>
 					</div>
 				</div> <!-- /.row -->
+
+
+
+
+
+
+				<div class="row">
+					<div class="col-md-12 mt-3">
+						<div class="card">
+							<!-- card-header -->
+							<div class="card-header">
+								<h5 class="card-title">
+									<i class="fa fa-list-alt fa-2x text-info"></i>
+									Annual Sales & Expenses Report
+								</h5>
+								<div class="card-tools">
+									<button type="button" class="btn btn-tool" data-card-widget="collapse">
+										<i class="fas fa-minus"></i>
+									</button>
+								</div>
+							</div> <!-- /.card-header -->
+
+							<div class="card-body">
+								<p class="text-center">
+									<strong>
+										Number of sales & expenses made: 1 Jan - 31 Dec <script>document.write(new Date().getFullYear());</script>
+									</strong>
+									<small>(Not amount/money in $)</small>
+								</p>
+								<div class="chart">
+									<!-- Sales Chart Canvas -->
+									<canvas id="profExpChart" height="350" style="max-height: 350;"></canvas>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="row">
+					<div class="col-md-12 mt-3">
+						<div class="card">
+							<!-- card-header -->
+							<div class="card-header">
+								<h5 class="card-title">
+									<i class="fa fa-dollar-sign fa-2x text-success"></i> Annual Sales & Expenses Report 
+								</h5>
+								<div class="card-tools">
+									<button type="button" class="btn btn-tool" data-card-widget="collapse">
+										<i class="fas fa-minus"></i>
+									</button>
+								</div>
+							</div> <!-- /.card-header -->
+
+							<div class="card-body">
+								<p class="text-center">
+									<strong>
+										Sales & expenses made: 1 Jan - 31 Dec <script>document.write(new Date().getFullYear());</script>
+									</strong>
+									<small>(Amount/money in $)</small>
+								</p>
+								<div class="chart">
+									<!-- Sales Chart Canvas -->
+									<canvas id="profExpAmountChart" height="350" style="max-height: 350;"></canvas>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
 			</div> <!-- /.container-fluid -->
 		</section> <!-- /.content -->
@@ -493,27 +628,342 @@
 
 
 {% block extra_scripts %}
-		<script>
-		    var ctx = document.getElementById('usersPieChart').getContext('2d');
-		    var donutData = {
-		    	labels: ['Total', 'Staff users', 'Superusers', 'Simple users'],
-		    	datasets: [
-		    		{
-			    		data: [{{users_count}}, {{staff_users_count}}, {{superusers_count}}, {{lambda_users_count}}],
-			    		backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef'],
-			    	}
-		    	]
-		    }
-		    var donutOptions = {
-		    	maintainAspectRatio : false,
-		    	responsive : true,
-		    }
-		    var donutChart = new Chart(ctx,{
-		    	type: 'doughnut',
-		    	data: donutData,
-		    	options: donutOptions
-		    })
-		</script>
+	<script>
+	    var ctx = document.getElementById('usersPieChart').getContext('2d');
+	    var donutData = {
+	    	labels: ['Total', 'Staff users', 'Superusers', 'Simple users'],
+	    	datasets: [
+	    		{
+		    		data: [{{users_count}}, {{staff_users_count}}, {{superusers_count}}, {{lambda_users_count}}],
+		    		backgroundColor : ['#f56954', '#00a65a', '#f39c12', '#00c0ef'],
+		    	}
+	    	]
+	    }
+	    var donutOptions = {
+	    	maintainAspectRatio : false,
+	    	responsive : true,
+	    }
+	    var donutChart = new Chart(ctx,{
+	    	type: 'doughnut',
+	    	data: donutData,
+	    	options: donutOptions
+	    })
+	</script>
+
+	<script>
+		$(function () {
+			'use strict'
+
+			//-----------------------
+			//- ANNUAL SALES CHART -
+			//-----------------------
+
+			// Get context with jQuery - using jQuery's .get() method.
+			var salesChartCanvas = $('#salesChart').get(0).getContext('2d')
+
+			var salesChartData = {
+				labels  : ['Jan', 'Feb', 'March', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+				datasets: [
+					{
+					label               : 'Sales',
+					backgroundColor     : 'rgba(60,141,188,0.9)',
+					borderColor         : 'rgba(60,141,188,0.8)',
+					pointRadius         : false,
+					pointColor          : '#3b8bba',
+					pointStrokeColor    : 'rgba(60,141,188,1)',
+					pointHighlightFill  : '#fff',
+					pointHighlightStroke: 'rgba(60,141,188,1)',
+					data : [
+							{{jan_sale}},
+							{{feb_sale}},
+							{{march_sale}},
+							{{apr_sale}},
+							{{may_sale}},
+							{{jun_sale}},
+							{{jul_sale}},
+							{{aug_sale}},
+							{{sept_sale}},
+							{{oct_sale}},
+							{{nov_sale}},
+							{{dec_sale}}
+						]
+					},
+				]
+			}
+
+			var salesChartOptions = {
+			  maintainAspectRatio : false,
+			  responsive : true,
+			  legend: {
+			    display: false
+			  },
+			  scales: {
+			    xAxes: [{
+			      gridLines : {
+			        display : false,
+			      }
+			    }],
+			    yAxes: [{
+			      gridLines : {
+			        display : false,
+			      }
+			    }]
+			  }
+			}
+
+			// This will get the first returned node in the jQuery collection.
+			var salesChart = new Chart(salesChartCanvas, { 
+			    type: 'line', 
+			    data: salesChartData, 
+			    options: salesChartOptions
+			  }
+			)
+
+			//---------------------------
+			//- END ANNUAL SALES CHART -
+			//---------------------------
+		
+
+
+
+
+			//---------------------------
+			//- ANNUAL USERS CHART -
+			//---------------------------
+			var lineChartCanvas = $('#usersLineChart').get(0).getContext('2d')
+			
+
+
+
+			var lineChartOptions = {
+				maintainAspectRatio : false,
+				responsive : true,
+				legend: {
+				  display: false
+				},
+				scales: {
+				  xAxes: [{
+				    gridLines : {
+				      display : false,
+				    }
+				  }],
+				  yAxes: [{
+				    gridLines : {
+				      display : false,
+				    }
+				  }]
+				}
+			}
+			
+
+
+			var lineChartData = {
+				labels  : ['Jan', 'Feb', 'March', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+
+				datasets: [
+					{
+					label               : 'Sales',
+					backgroundColor     : 'rgba(60,141,188,0.9)',
+					borderColor         : 'rgba(60,141,188,0.8)',
+					pointRadius         : false,
+					pointColor          : '#3b8bba',
+					pointStrokeColor    : 'rgba(60,141,188,1)',
+					pointHighlightFill  : '#fff',
+					pointHighlightStroke: 'rgba(60,141,188,1)',
+					data : [
+							{{jan_user}},
+							{{feb_user}},
+							{{march_user}},
+							{{apr_user}},
+							{{may_user}},
+							{{jun_user}},
+							{{jul_user}},
+							{{aug_user}},
+							{{sept_user}},
+							{{oct_user}},
+							{{nov_user}},
+							{{dec_user}}
+						]
+					},
+				]
+			}
+			
+
+			lineChartData.datasets[0].fill = false;
+			lineChartOptions.datasetFill = false
+
+			var lineChart = new Chart(lineChartCanvas, { 
+				type: 'line',
+				data: lineChartData, 
+				options: lineChartOptions
+			})
+
+			//---------------------------
+			//- END ANNUAL USERS CHART -
+			//---------------------------
+
+
+
+
+
+
+
+
+
+			var barChartCanvas = $('#profExpChart').get(0).getContext('2d')
+			var barChartData = {
+				labels  : ['Jan', 'Feb', 'March', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+				datasets: [
+					{
+						label               : 'Sales',
+						backgroundColor     : 'rgba(60,141,188,0.9)',
+						borderColor         : 'rgba(60,141,188,0.8)',
+						pointRadius          : false,
+						pointColor          : '#3b8bba',
+						pointStrokeColor    : 'rgba(60,141,188,1)',
+						pointHighlightFill  : '#fff',
+						pointHighlightStroke: 'rgba(60,141,188,1)',
+						data                : [
+							{{jan_sale}},
+							{{feb_sale}},
+							{{march_sale}},
+							{{apr_sale}},
+							{{may_sale}},
+							{{jun_sale}},
+							{{jul_sale}},
+							{{aug_sale}},
+							{{sept_sale}},
+							{{oct_sale}},
+							{{nov_sale}},
+							{{dec_sale}}
+						]
+					},
+					{
+						label               : 'Expenses',
+						backgroundColor     : 'rgba(210, 214, 222, 1)',
+						borderColor         : 'rgba(210, 214, 222, 1)',
+						pointRadius         : false,
+						pointColor          : 'rgba(210, 214, 222, 1)',
+						pointStrokeColor    : '#c1c7d1',
+						pointHighlightFill  : '#fff',
+						pointHighlightStroke: 'rgba(220,220,220,1)',
+						data                : [
+							{{jan_expense}},
+							{{feb_expense}},
+							{{march_expense}},
+							{{apr_expense}},
+							{{may_expense}},
+							{{jun_expense}},
+							{{jul_expense}},
+							{{aug_expense}},
+							{{sept_expense}},
+							{{oct_expense}},
+							{{nov_expense}},
+							{{dec_expense}}
+						]
+					}
+				]
+			}
+			var temp0 = barChartData.datasets[0]
+			var temp1 = barChartData.datasets[1]
+			barChartData.datasets[0] = temp1
+			barChartData.datasets[1] = temp0
+
+			var barChartOptions = {
+				responsive              : true,
+				maintainAspectRatio     : false,
+				datasetFill             : false
+			}
+
+			var barChart = new Chart(barChartCanvas, {
+				type: 'bar', 
+				data: barChartData,
+				options: barChartOptions
+			})
+		})
+	</script>
+
+
+
+	<script>
+		$(function () {
+
+			'use strict'
+
+			var barChartCanvas = $('#profExpAmountChart').get(0).getContext('2d')
+			var barChartData = {
+				labels  : ['Jan', 'Feb', 'March', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'],
+				datasets: [
+					{
+						label               : 'Sales $',
+						backgroundColor     : 'rgba(60,141,188,0.9)',
+						borderColor         : 'rgba(60,141,188,0.8)',
+						pointRadius          : false,
+						pointColor          : '#3b8bba',
+						pointStrokeColor    : 'rgba(60,141,188,1)',
+						pointHighlightFill  : '#fff',
+						pointHighlightStroke: 'rgba(60,141,188,1)',
+						data                : [
+							
+							{{jan_sale_amount}},
+							{{feb_sale_amount}},
+							{{march_sale_amount}},
+							{{apr_sale_amount}},
+							{{may_sale_amount}},
+							{{jun_sale_amount}},
+							{{jul_sale_amount}},
+							{{aug_sale_amount}},
+							{{sept_sale_amount}},
+							{{oct_sale_amount}},
+							{{nov_sale_amount}},
+							{{dec_sale_amount}},
+						],
+					},
+					{
+						label               : 'Expenses $',
+						backgroundColor     : 'rgba(210, 214, 222, 1)',
+						borderColor         : 'rgba(210, 214, 222, 1)',
+						pointRadius         : false,
+						pointColor          : 'rgba(210, 214, 222, 1)',
+						pointStrokeColor    : '#c1c7d1',
+						pointHighlightFill  : '#fff',
+						pointHighlightStroke: 'rgba(220,220,220,1)',
+						data                : [
+							{{jan_expense_amount}},
+							{{feb_expense_amount}},
+							{{march_expense_amount}},
+							{{apr_expense_amount}},
+							{{may_expense_amount}},
+							{{jun_expense_amount}},
+							{{jul_expense_amount}},
+							{{aug_expense_amount}},
+							{{sept_expense_amount}},
+							{{oct_expense_amount}},
+							{{nov_expense_amount}},
+							{{dec_expense_amount}},
+						],
+					}
+				],
+			}
+			var temp0 = barChartData.datasets[0]
+			var temp1 = barChartData.datasets[1]
+			barChartData.datasets[0] = temp1
+			barChartData.datasets[1] = temp0
+
+			var barChartOptions = {
+				responsive              : true,
+				maintainAspectRatio     : false,
+				datasetFill             : false
+			}
+
+			var barChart = new Chart(barChartCanvas, {
+				type: 'line', 
+				data: barChartData,
+				options: barChartOptions
+			})
+
+		})
+	</script>
 {% endblock extra_scripts %}
 
 

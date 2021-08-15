@@ -1,0 +1,126 @@
+{% extends 'admin/includes/admin_base.html' %}
+
+{% load i18n %}
+{% load static %}
+{% load humanize %}
+{% load hitcount_tags %}
+
+
+{% block title %}
+	Inbox admin | Foody
+{% endblock title %}
+
+
+{% block content %}
+	<!-- Content Header (Page header) -->
+		<div class="content-header pt-5 mt-5">
+			<div class="container-fluid">
+				<div class="row mb-4">
+					<div class="col-sm-6">
+						<h1 class="m-0 text-dark">Admin Dashboard</h1>
+					</div>
+					<div class="col-sm-6">
+						<ol class="breadcrumb float-sm-right">
+							<li class="breadcrumb-item">
+								<a href="{% url 'admin-home' %}">
+									Admin home
+								</a>
+							</li>
+							<li class="breadcrumb-item active">
+								Inbox
+							</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+		<!-- Main content -->
+		<section class="content mb-5">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-2"></div>
+					<div class="col-md-8">
+						<div class="card card-primary card-outline">
+							<div class="card-header">
+								<h3 class="card-title">Inbox</h3>
+								<div class="card-tools">
+									<button type="button" class="btn btn-tool" data-card-widget="collapse">
+										<i class="fas fa-minus"></i>
+									</button>
+								</div>
+							</div>
+
+							<div class="card-body p-0">
+								{% if request.user.notifications.unread %}
+								<div class="mailbox-controls">
+									<a href="{% url 'notifications:mark_all_as_read' %}?next=/superadmin/admin/inbox/" type="button" class="btn btn-default btn-sm checkbox-toggle" title="Mark all as read">
+										<i class="fa fa-check"></i>
+									</a>
+
+									<a href="{% url 'mark_all_notifs_as_delete' %}?next=/superadmin/admin/inbox/" type="button" class="btn btn-default btn-sm" title="Delete all">
+										<i class="far fa-trash-alt"></i>
+									</a>
+
+
+									<div class="float-right">
+										<small>
+											Total = {{ request.user.notifications.unread.count }}
+										</small>
+									</div>
+								</div>
+
+								<div class="table-responsive mailbox-messages">
+									<table class="table table-hover table-striped">
+										<tbody>
+											{% for notif in request.user.notifications.unread %}
+											<tr>
+												<td>
+													<div class="icheck-primary">
+														<a href="{% url 'notifications:mark_as_read' notif.slug  %}?next=/superadmin/admin/inbox/" type="button" title="Mark as read" value="" id="check1">
+															<i class="far fa-square"></i>
+														</a>
+													</div>
+												</td>
+												<td class="mailbox-star">
+													<i class="fas fa-star text-warning"></i>
+												</td>
+												<td class="mailbox-name">
+													<b>
+														{{notif.verb|safe|linebreaks}}
+													</b>
+												</td>
+												<td class="mailbox-subject">
+													<small>
+														{{notif.description}}
+													</small>
+												</td>
+												<td class="mailbox-date">
+													<small>
+														{{notif.timestamp|naturaltime}}
+													</small>
+												</td>
+											</tr>
+											{% endfor %}
+										</tbody>
+									</table>
+								</div>
+
+
+								{% else %}
+								<div class="p-2">
+									<p class="text-center text-info">
+										There are no new notifications ! Comme back later!!!
+									</p>
+								</div>
+								{% endif %}
+							</div>
+
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+{% endblock content %}
+

@@ -471,7 +471,7 @@ def food_item_list_view(request):
 		
 	context = {
 		'items' : items_obj,
-		'current_site' : get_current_site(request)
+		'current_site' : get_current_site(request),
 	}
 
 	items = Item.objects.all()

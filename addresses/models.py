@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 
 ADDRESS_CHOICES = (
-    ('B', 'Livraison'),
-    ('S', 'Facturation'),
+    ('B', 'Billing'),
+    ('S', 'Shipping'),
 )
 
 class Address(models.Model):

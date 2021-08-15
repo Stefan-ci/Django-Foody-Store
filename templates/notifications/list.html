@@ -1,0 +1,92 @@
+{% extends 'public/includes/base.html' %}
+
+{% load i18n %}
+{% load static %}
+{% load sweetify %}
+{% load humanize %}
+{% load hitcount_tags %}
+{% load notifications_tags %}
+
+{% sweetify %}
+
+{% block extra_links %}
+    <link rel="stylesheet" href="{% static 'css/authentication.css' %}">
+{% endblock extra_links %}
+
+{% block title %}
+		Notifications - {{request.user.username}} | Afro-DF Bouaké
+{% endblock title %}
+
+{% block content %}
+
+	{% if messages %}
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-4 col-md-4"></div>
+			<div class="col-lg-4 col-md-4">
+				<div class="mt-5 pt-4 center-block">
+	    		{% for message in messages %}
+	    		    <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
+	    		        {{ message }}
+	    		        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	    		            <span aria-hidden="true">&times;</span>
+	    		        </button>
+	    		    </div>
+	    		{% endfor %}
+		    	</div>
+			</div>
+	    </div>
+	</div>
+	{% endif %}
+
+	
+	<div class="container">
+        <div class="pt-5"></div>
+        <div class="row">
+            <div class="col-lg-2 col-md-2"></div>
+            <div class="col-lg-8 col-md-8">
+            	<div class="mb-4 pt-5">
+            		{% if request.user.notifications.unread %}
+            		<p class="pl-5">
+            			<span>
+            				<a href="{% url 'notifications:mark_all_as_read' %}">
+            					Tout marquer comme lus
+            				</a>
+            			</span>
+            		</p>
+            		{% endif %}
+            		<ul class="notifications">
+            			{% for notice in notifications %}
+            			{% include 'notifications/notice.html' %}
+            			{% endfor %}
+            		</ul>
+            	</div>
+            	{% if is_paginated %}
+            	<div class="text-center pt-3">
+            		{% if page_obj.has_previous %}
+            		<a href="?page={{ page_obj.previous_page_number }}" class="btn btn-outline-info">&laquo;</a>
+            		<a href="?page=1" class="btn btn-outline-info">1</a>
+            		{% endif %}
+
+            		{% for num in page_obj.paginator.page_range %}
+            		{% if page_obj.number == num %}
+            		<a href="?page={{num}}" class="btn btn-info">{{ num }}</a>
+            		{% elif num > page_obj.number|add:'-2' and num < page_obj.number|add:'2' %}
+            		<a href="?page={{num}}" class="btn btn-outline-info">{{ num }}</a>
+            		{% endif %}
+            		{% endfor %}
+
+            		{% if page_obj.has_next %}
+            		<a href="?page={{ page_obj.next_page_number }}" class="btn btn-outline-info">&raquo;</a>
+            		<a href="?page={{ page_obj.paginator.num_pages }}" class="btn btn-outline-info">Fin</a>
+            		{% endif %}
+            	</div>
+            	{% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block footer %}
+	{% include 'public/includes/tiny_footer.html' %}
+{% endblock footer %}

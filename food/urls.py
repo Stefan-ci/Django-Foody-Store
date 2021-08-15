@@ -32,7 +32,7 @@ info_dict = {
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('hitcount/', include('hitcount.urls', namespace='hitcount')),
-    path('notifications/', include(notifications.urls, namespace='notifications')),
+    path('inbox/notifications/', include(notifications.urls, namespace='notifications')),
         
     path('', include('website.urls')),
     path('api/', include('api.urls')),

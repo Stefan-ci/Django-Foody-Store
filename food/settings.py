@@ -28,7 +28,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-v4h@qiqdh2+4@)fd+r!6@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DEBUG', True)
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'stefan-foody.herokuapp.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', 'foody-civ.herokuapp.com']
 
 
 # Application definition
@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'orders.apps.OrdersConfig',
     'profil.apps.ProfilConfig',
     'refunds.apps.RefundsConfig',
+    'reports.apps.ReportsConfig',
     'website.apps.WebsiteConfig',
     'payments.apps.PaymentsConfig',
     'contacts.apps.ContactsConfig',
@@ -197,5 +198,10 @@ SITE_ID = 1
 
 LOGIN_URL = 'login'
 
-
+DJANGO_NOTIFICATIONS_CONFIG = {
+    'USE_JSONFIELD' : True,
+    'SOFT_DELETE' : True,
+    'NUM_TO_FETCH' : 30,
+    'PAGINATE_BY' : 30,
+}
 
