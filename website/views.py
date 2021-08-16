@@ -30,6 +30,7 @@ import random
 import string
 import stripe
 
+from hitcount.models import HitCount
 
 from products.models import Item
 from coupon.models import Coupon
@@ -58,6 +59,25 @@ def is_valid_form(values):
 		if field == '':
 			valid = False
 	return valid
+
+
+
+def change_item_popular_status(request):
+	public_items = Item.objects.all()
+	# if public_items:
+	# 	for item in public_items:
+	# 		item_hits = HitCount.objects.filter(content_object=item.id)
+	# 		print(f'item: {item.title} ==> {item_hits} views')
+	# 		return item_hits.count()
+	# 	return item
+	# else:
+	# 	return None
+	data = None
+	for item in public_items:
+		data = {
+			'id' : item.id,
+		}
+	return JsonResponse(data)
 
 
 

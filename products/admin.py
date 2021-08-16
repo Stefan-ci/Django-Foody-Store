@@ -11,7 +11,7 @@ class ItemAdmin(ImportExportModelAdmin):
 		'slug' : ('title',),
 	}
 	list_display = ['title', 'is_public', 'price', 'discount_price',
-		'date', 'category']
+		'date', 'category', 'is_popular']
 	list_filter = ['is_public', 'is_popular', 'date', 'category']
 	
 	actions = ['make_not_published', 'make_published', 

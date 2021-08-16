@@ -1,26 +1,47 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.sites.shortcuts import get_current_site
-from django.contrib import messages
 from django.http import JsonResponse, HttpResponseRedirect
-from rest_framework.response import Response
-from django.contrib.auth.models import User, Group
-from django.contrib.auth.forms import UserCreationForm
-from django.views.generic import ListView, DetailView, View, CreateView
 from django.views.generic.detail import SingleObjectMixin
-from django.views.generic.edit import UpdateView, FormView
-from django.template.loader import render_to_string
-from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import Q
-
-
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.utils import timezone
-from django.urls import reverse_lazy
-
-
+from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import ObjectDoesNotExist
-from hitcount.views import HitCountDetailView
-from django.conf import settings
-from django.core.mail import EmailMessage, EmailMultiAlternatives
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+
+
+from products.models import Item
+from .serializers import ItemSerializer
+
+
+
+
+
+@api_view(['GET'])
+def apiOverview(request):
+	api_urls = {
+		'List' : '/item-list/',
+		'Detail view' : '/item-detail/<str:pk>/',
+	}
+	return Response(api_urls)
+
+
+
+@api_view(['GET'])
+def itemsList(request):
+	try:
+		items = Item.objects.all()
+		serializer = ItemSerializer(items, many=True)
+		return Response(serializer.data)
+	except:
+		return Response(None)
+
+
+
+@api_view(['GET'])
+def itemDetail(request, pk):
+	try:
+		item = Item.objects.get(id=pk)
+		serializer = ItemSerializer(item, many=False)
+		return Response(serializer.data)
+	except ObjectDoesNotExist:
+		return Response(None)
