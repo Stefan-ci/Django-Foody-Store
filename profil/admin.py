@@ -10,5 +10,16 @@ class ProfilAdmin(ImportExportModelAdmin):
 	search_fields = ['user__username', 'date', 'stripe_customer_id', 
 		'one_click_purchasing']
 
+	date_hierarchy = 'date'
+
+	def has_add_permission(self, request):
+		return False
+
+	def has_delete_permission(self, request, obj=None):
+		return False
+
+	def has_change_permission(self, request, obj=None):
+		return False
+
 
 admin.site.register(Profil, ProfilAdmin)

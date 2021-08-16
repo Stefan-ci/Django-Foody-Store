@@ -1,5 +1,4 @@
 from import_export.admin import ImportExportModelAdmin
-from django.utils.translation import gettext as _
 from django.utils.translation import ngettext
 from django.contrib.auth.models import User
 from django.contrib import admin, messages
@@ -16,6 +15,14 @@ class UserCustomAdmin(ImportExportModelAdmin):
 	actions = ['activate_user', 'deactivate_user', 'make_user_staff', 
 	'remove_user_staff']
 
+	def has_add_permission(self, request):
+		return False
+
+	def has_delete_permission(self, request, obj=None):
+		return False
+
+	def has_change_permission(self, request, obj=None):
+		return False
 
 	"""
 		Add custom actions to Model `User`
@@ -23,11 +30,11 @@ class UserCustomAdmin(ImportExportModelAdmin):
 	def activate_user(self, request, queryset):
 		updated = queryset.update(is_active=True)
 		self.message_user(request, ngettext(
-				"%d utilisateur a bien été activé",
-				"%d utilisateurs ont bien été activés",
+				"%d user successfully activated",
+				"%d users successfully activated",
 				updated,
 			) % updated, messages.SUCCESS)
-	text = _("Activer les utilisateurs sélectionnés")
+	text = 'Activate selected users'
 	activate_user.short_description = text
 
 
@@ -35,11 +42,11 @@ class UserCustomAdmin(ImportExportModelAdmin):
 	def deactivate_user(self, request, queryset):
 		updated = queryset.update(is_active=False)
 		self.message_user(request, ngettext(
-				"%d utilisateur a bien été désactivé",
-				"%d utilisateurs ont bien été désactivés",
+				"%d user successfully deactivated",
+				"%d users successfully deactivated",
 				updated,
 			) % updated, messages.SUCCESS)
-	text = _("Désactiver les utilisateurs sélectionnés")
+	text = "Deactivate selected users"
 	deactivate_user.short_description = text
 
 
@@ -47,11 +54,11 @@ class UserCustomAdmin(ImportExportModelAdmin):
 	def make_user_staff(self, request, queryset):
 		updated = queryset.update(is_staff=True)
 		self.message_user(request, ngettext(
-				"%d utilisateur a bien été promu 'AUXILIAIRE' ",
-				"%d utilisateurs ont bien été promus 'AUXILIAIRES'",
+				"%d user successfully promoted to staff",
+				"%d users successfully promoted to staff",
 				updated,
 			) % updated, messages.SUCCESS)
-	text = _("Promouvoir les utilisateurs sélectionnés")
+	text = "Promote selected users"
 	make_user_staff.short_description = text
 
 
@@ -59,19 +66,19 @@ class UserCustomAdmin(ImportExportModelAdmin):
 	def remove_user_staff(self, request, queryset):
 		updated = queryset.update(is_staff=False)
 		self.message_user(request, ngettext(
-				"%d utilisateur n'est plus 'AUXILIAIRE' ",
-				"%d utilisateurs ne sont plus 'AUXILIAIRES'",
+				"%d user is no more staff",
+				"%d users are no more staff",
 				updated,
 			) % updated, messages.SUCCESS)
-	text = _("Déchoir les utilisateurs sélectionnés")
+	text = "Deprive selected users"
 	remove_user_staff.short_description = text
 
 
 
 
 
-admin.site.site_header = _("Site d'administration de Django | Food !")
-admin.site.index_title = _("Administration 1 😋😋 | Food")
+admin.site.site_header = "Django Administration | Foody "
+admin.site.index_title = "Administration 1 😋😋 | Foody "
 admin.site.enable_nav_sidebar = True
 
 

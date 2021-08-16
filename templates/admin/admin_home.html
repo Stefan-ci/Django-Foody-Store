@@ -172,7 +172,7 @@
 							<!-- card-header -->
 							<div class="card-header">
 								<h5 class="card-title">
-									Annual Sales Report
+									Annual Sales Report 
 								</h5>
 								<div class="card-tools">
 									<button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -668,7 +668,7 @@
 					label               : 'Sales',
 					backgroundColor     : 'rgba(60,141,188,0.9)',
 					borderColor         : 'rgba(60,141,188,0.8)',
-					pointRadius         : false,
+					pointRadius         : true,
 					pointColor          : '#3b8bba',
 					pointStrokeColor    : 'rgba(60,141,188,1)',
 					pointHighlightFill  : '#fff',
@@ -739,7 +739,7 @@
 				maintainAspectRatio : false,
 				responsive : true,
 				legend: {
-				  display: false
+				  display: true
 				},
 				scales: {
 				  xAxes: [{
@@ -765,7 +765,7 @@
 					label               : 'Sales',
 					backgroundColor     : 'rgba(60,141,188,0.9)',
 					borderColor         : 'rgba(60,141,188,0.8)',
-					pointRadius         : false,
+					pointRadius         : true,
 					pointColor          : '#3b8bba',
 					pointStrokeColor    : 'rgba(60,141,188,1)',
 					pointHighlightFill  : '#fff',
@@ -818,7 +818,7 @@
 						label               : 'Sales',
 						backgroundColor     : 'rgba(60,141,188,0.9)',
 						borderColor         : 'rgba(60,141,188,0.8)',
-						pointRadius          : false,
+						pointRadius          : true,
 						pointColor          : '#3b8bba',
 						pointStrokeColor    : 'rgba(60,141,188,1)',
 						pointHighlightFill  : '#fff',
@@ -842,7 +842,7 @@
 						label               : 'Expenses',
 						backgroundColor     : 'rgba(210, 214, 222, 1)',
 						borderColor         : 'rgba(210, 214, 222, 1)',
-						pointRadius         : false,
+						pointRadius         : true,
 						pointColor          : 'rgba(210, 214, 222, 1)',
 						pointStrokeColor    : '#c1c7d1',
 						pointHighlightFill  : '#fff',
@@ -872,7 +872,22 @@
 			var barChartOptions = {
 				responsive              : true,
 				maintainAspectRatio     : false,
-				datasetFill             : false
+				datasetFill             : false,
+				legend: {
+				  display: true
+				},
+				scales: {
+				  xAxes: [{
+				    gridLines : {
+				      display : false,
+				    }
+				  }],
+				  yAxes: [{
+				    gridLines : {
+				      display : false,
+				    }
+				  }]
+				}
 			}
 
 			var barChart = new Chart(barChartCanvas, {
@@ -898,7 +913,7 @@
 						label               : 'Sales $',
 						backgroundColor     : 'rgba(60,141,188,0.9)',
 						borderColor         : 'rgba(60,141,188,0.8)',
-						pointRadius          : false,
+						pointRadius          : true,
 						pointColor          : '#3b8bba',
 						pointStrokeColor    : 'rgba(60,141,188,1)',
 						pointHighlightFill  : '#fff',
@@ -923,7 +938,7 @@
 						label               : 'Expenses $',
 						backgroundColor     : 'rgba(210, 214, 222, 1)',
 						borderColor         : 'rgba(210, 214, 222, 1)',
-						pointRadius         : false,
+						pointRadius         : true,
 						pointColor          : 'rgba(210, 214, 222, 1)',
 						pointStrokeColor    : '#c1c7d1',
 						pointHighlightFill  : '#fff',
@@ -949,11 +964,28 @@
 			var temp1 = barChartData.datasets[1]
 			barChartData.datasets[0] = temp1
 			barChartData.datasets[1] = temp0
+			temp0.fill = false
+			temp1.fill = false
 
 			var barChartOptions = {
 				responsive              : true,
 				maintainAspectRatio     : false,
-				datasetFill             : false
+				datasetFill             : false,
+				legend: {
+				  display: true
+				},
+				scales: {
+				  xAxes: [{
+				    gridLines : {
+				      display : false,
+				    }
+				  }],
+				  yAxes: [{
+				    gridLines : {
+				      display : false,
+				    }
+				  }]
+				}
 			}
 
 			var barChart = new Chart(barChartCanvas, {

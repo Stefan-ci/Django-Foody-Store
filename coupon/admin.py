@@ -6,5 +6,7 @@ class CouponAdmin(ImportExportModelAdmin):
 	list_display = ['code', 'amount', 'end_date', 'is_active', 'date']
 	list_filter = ['end_date', 'is_active', 'date']
 	search_fields = ['code', 'amount']
+	date_hierarchy = 'date'
+
 
 admin.site.register(Coupon, CouponAdmin)

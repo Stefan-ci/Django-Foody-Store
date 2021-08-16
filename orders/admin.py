@@ -22,6 +22,16 @@ class OrderAdmin(ImportExportModelAdmin):
 	list_display_links = ['user', 'shipping_address', 'coupon',
 		'billing_address', 'payment',]
 	actions = ['make_refund_accepted']
+	date_hierarchy = 'ordered_date'
+
+	def has_add_permission(self, request):
+		return False
+
+	def has_delete_permission(self, request, obj=None):
+		return False
+
+	def has_change_permission(self, request, obj=None):
+		return False
 
 
 	def make_refund_accepted(self, request, queryset):
@@ -42,6 +52,17 @@ class OrderItemAdmin(ImportExportModelAdmin):
 	list_display = ['user', 'ordered', 'item', 'quantity', 'date']
 	list_filter = ['date', 'ordered']
 	search_fields = ['user__username', 'item__title', 'quantity']
+
+	date_hierarchy = 'date'
+
+	def has_add_permission(self, request):
+		return False
+
+	def has_delete_permission(self, request, obj=None):
+		return False
+
+	def has_change_permission(self, request, obj=None):
+		return False
 
 
 admin.site.register(Order, OrderAdmin)
