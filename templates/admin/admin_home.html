@@ -273,7 +273,7 @@
 						<!-- MAP & BOX PANE -->
 						<div class="card">
 							<div class="card-header">
-								<h3 class="card-title">Visitors Report</h3>
+								<h3 class="card-title">Visitors Weekly Report</h3>
 								<div class="card-tools">
 									<button type="button" class="btn btn-tool" data-card-widget="collapse">
 										<i class="fas fa-minus"></i>
@@ -284,8 +284,8 @@
 							<div class="card-body p-0">
 								<div class="d-md-flex">
 									<div class="p-1 flex-fill" style="overflow: hidden">
-										<div id="world-map-markers"  style="height: 325px; overflow: hidden">
-											<div class="map"></div>
+										<div style="height: 325px; overflow: hidden">
+											<canvas id="visitorsWeekChart" height="325" style="height: 325;"></canvas>
 										</div>
 									</div>
 
@@ -1031,6 +1031,89 @@
 				data: barChartData,
 				options: barChartOptions
 			})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			//---------------------------
+			//- WEEKLY VISIRORS CHART -
+			//---------------------------
+			var lineChartCanvas = $('#visitorsWeekChart').get(0).getContext('2d')
+			
+
+
+
+			var lineChartOptions = {
+				maintainAspectRatio : false,
+				responsive : true,
+				legend: {
+				  display: true
+				},
+				scales: {
+				  xAxes: [{
+				    gridLines : {
+				      display : false,
+				    }
+				  }],
+				  yAxes: [{
+				    gridLines : {
+				      display : false,
+				    }
+				  }]
+				}
+			}
+			
+
+
+			var lineChartData = {
+				labels  : ['Mon', 'Tue', 'We', 'Thurs', 'Fri', 'Sat', 'Sun'],
+
+				datasets: [
+					{
+					label               : 'Visitors',
+					backgroundColor     : 'rgba(60,141,188,0.9)',
+					borderColor         : 'rgba(60,141,188,0.8)',
+					pointRadius         : true,
+					pointColor          : '#3b8bba',
+					pointStrokeColor    : 'rgba(60,141,188,1)',
+					pointHighlightFill  : '#fff',
+					pointHighlightStroke: 'rgba(60,141,188,1)',
+					data : [
+							{{mon_visits}},
+							{{tue_visits}},
+							{{wed_visits}},
+							{{thus_visits}},
+							{{fri_visits}},
+							{{sat_visits}},
+							{{sun_visits}}
+						]
+					},
+				]
+			}
+			
+
+			lineChartData.datasets[0].fill = false;
+			lineChartOptions.datasetFill = false
+
+			var lineChart = new Chart(lineChartCanvas, { 
+				type: 'line',
+				data: lineChartData, 
+				options: lineChartOptions
+			})
+
+			//---------------------------
+			//- END WEEKLY VISIRORS CHART -
+			//---------------------------
 
 		})
 	</script>

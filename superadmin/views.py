@@ -10,7 +10,7 @@ from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.edit import UpdateView, FormView
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
-from django.db.models import Q
+from django.db.models import Q, Sum
 
 
 from django.contrib.auth.decorators import login_required
@@ -31,11 +31,10 @@ from django.core.mail import EmailMessage, EmailMultiAlternatives
 from hitcount.models import HitCount, Hit
 
 
-import datetime
-today_date = datetime.date.today()
-yesterday = today_date - datetime.timedelta(days=1)
-this_week = today_date - datetime.timedelta(days=7)
-this_month = today_date - datetime.timedelta(days=30)
+from datetime import datetime
+date = datetime.now()
+curr_month = date.month
+curr_year = date.year
 
 
 
@@ -57,6 +56,7 @@ from refunds.models import Refund
 from refunds.refund_forms import RefundForm
 from orders.orders_forms import CheckoutForm
 from payments.forms import PaymentForm
+from superadmin.utils import daily_visits
 
 
 
@@ -171,8 +171,6 @@ not_delivered_orders_count = Order.objects.filter(
 	being_delivered=False,
 	received=False,
 ).count()
-
-
 
 
 
@@ -321,6 +319,15 @@ def admin_home_view(request):
 		'oct_user' : oct_user,
 		'nov_user' : nov_user,
 		'dec_user' : dec_user,
+
+
+		'mon_visits' : daily_visits(1, curr_month, curr_year),
+		'tue_visits' : daily_visits(2, curr_month, curr_year),
+		'wed_visits' : daily_visits(3, curr_month, curr_year),
+		'thus_visits' : daily_visits(4, curr_month, curr_year),
+		'fri_visits' : daily_visits(5, curr_month, curr_year),
+		'sat_visits' : daily_visits(6, curr_month, curr_year),
+		'sun_visits' : daily_visits(7, curr_month, curr_year),
 
 
 		'jan_sale_amount' : monthly_sales(1),

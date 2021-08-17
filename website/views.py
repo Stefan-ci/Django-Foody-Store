@@ -522,6 +522,19 @@ def food_category_list_view(request, category):
 
 
 
+def food_tag_list_view(request, tag):
+
+	items = Item.objects.filter(tags__name=tag).order_by('-id')
+
+	context = {
+		'items' : items,
+		'items_tag' : tag,
+		'current_site' : get_current_site(request)
+	}
+
+	template_name = 'public/items/tags_list.html'
+	return render(request, template_name, context)
+
 
 
 

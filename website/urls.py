@@ -17,6 +17,7 @@ urlpatterns = [
 	path('food/<id>/<slug>/', views.food_item_detail_view, name='food-detail'),
 	path('foods/', views.food_item_list_view, name='food-list'),
 	path('foods/category/category=<category>/', views.food_category_list_view, name='food-category'),
+	path('foods/tags/tag=<tag>/', views.food_tag_list_view, name='food-tag'),
 
 	path('add-coupon/', views.AddCouponView.as_view(), name='add-coupon'),
 	path('request/refund/', views.RequestRefundView.as_view(), name='request-refund'),

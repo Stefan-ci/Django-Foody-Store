@@ -167,7 +167,7 @@
 							<h4>Tags</h4>
 							<div class="tag-link">
 								{% for tag in item.tags.all %}
-								<a href="#">
+								<a href="{% url 'food-tag' tag %}">
 									{{tag}}
 								</a>
 								{% endfor %}
@@ -214,7 +214,7 @@
 							      		<img class="media-object" src="{{ most_recent_food.picture.url }}" alt="{{ most_recent_food.title }}" title="{{ most_recent_food.title }}">
 							    	</a>
 							    	<div class="media-body">
-							      		<a href="" class="media-heading">
+							      		<a href="{% url 'food-detail' most_recent_food.id most_recent_food.slug %}" class="media-heading">
 							      			{{ most_recent_food.title }}
 							      		</a>
 							    	</div>
