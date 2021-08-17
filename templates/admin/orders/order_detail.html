@@ -1,0 +1,197 @@
+{% extends 'admin/includes/admin_base.html' %}
+
+{% load i18n %}
+{% load static %}
+{% load humanize %}
+{% load hitcount_tags %}
+
+
+{% block title %}
+	Details of Order with ID: {{order.id}} | Foody
+{% endblock title %}
+
+{% block navbar %}
+	{% include 'admin/includes/admin_navbar.html' %}
+{% endblock navbar %}
+
+{% block content %}
+
+	<!-- Content Header (Page header) -->
+		<section class="content-header pt-5 mt-5">
+			<div class="container-fluid">
+				<div class="row mb-2">
+					<div class="col-sm-6">
+						<h1 class="m-0 text-dark">
+							Order detail
+							{% if order.received %}
+							<span class="ml-3 badge badge-success">
+								Received
+							</span>
+							{% else %}
+							<span class="ml-3 badge badge-danger">
+								Not received
+							</span>
+							{% endif %}
+						</h1>
+					</div>
+					<div class="col-sm-6">
+						<ol class="breadcrumb float-sm-right">
+							<li class="breadcrumb-item">
+								<a href="{% url 'admin-home' %}">
+									Admin home
+								</a>
+							</li>
+							<li class="breadcrumb-item">
+								<a href="{% url 'all-orders' %}">
+									All orders
+								</a>
+							</li>
+							<li class="breadcrumb-item active">
+								Order ID {{order.id}}
+							</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</section>
+
+
+		<section class="content mb-5">
+			<div class="row mb-2">
+				<div class="col-6">
+					<div class="card shadow">
+						<div class="card-header">
+							<h3 class="card-title">
+								Order ID <span class="text-success">{{order.id}}</span>
+							</h3>
+							<div class="card-tools">
+								<button type="button" class="btn btn-tool" data-card-widget="collapse">
+									<i class="fas fa-minus"></i>
+								</button>
+							</div>
+						</div>
+
+						<div class="card-body">
+							<p>
+								<strong class="h6 text-info">Order ID</strong>: {{order.id}}
+							</p>
+							<p>
+								<strong class="h6 text-info">User username</strong>: <small>{{order.user.username}}</small>
+							</p>
+							<p>
+								<strong class="h6 text-info">User email</strong>: <small>{{order.user.email}}</small>
+							</p>
+							{% if order.ref_code %}
+							<p>
+								<strong class="h6 text-info">Referral code</strong>: <small>{{order.ref_code}}</small>
+							</p>
+							{% endif %}
+							<p>
+								<strong class="h6 text-info">Ordered</strong>: <span class="badge badge-{%if order.ordered%}success{%else%}danger{%endif%}">{{order.ordered}}</span>
+							</p>
+							{% if order.ordered %}
+							<p>
+								<strong class="h6 text-info">Ordered date</strong>: <small>{{order.ordered_date|naturaltime}}</small>
+							</p>
+							{% endif %}
+							{% if order.shipping_address %}
+							<p>
+								<strong class="h6 text-info">Shipping address</strong>: <small>{{order.shipping_address}}</small>, {{order.shipping_address.country.name}}
+							</p>
+							{% endif %}
+							{% if order.coupon %}
+							<p>
+								<strong class="h6 text-info">Coupon</strong>: <small>{{order.coupon.code}}</small>,  <span class="text-success">${{order.coupon.amount}}</span>
+							</p>
+							{% endif %}
+							{% if order.being_delivered %}
+							<p>
+								<strong class="h6 text-info">Being delivered</strong>: <span class="badge badge-success">{{order.being_delivered}}</span>
+							</p>
+							{% endif %}
+							{% if order.received %}
+							<p>
+								<strong class="h6 text-info">Received</strong>: <span class="badge badge-success">{{order.received}}</span>
+							</p>
+							{% endif %}
+							{% if order.refund_requested %}
+							<p>
+								<strong class="h6 text-info">Refund requested</strong>: <span class="badge badge-success">{{order.refund_requested}}</span>
+							</p>
+							{% endif %}
+							{% if order.refund_granted %}
+							<p>
+								<strong class="h6 text-info">Refund granted</strong>: <span class="badge badge-success">{{order.refund_granted}}</span>
+							</p>
+							{% endif %}
+						</div>
+
+					</div>
+				</div>
+				<div class="col-6">
+					<div class="card shadow">
+						<div class="card-header">
+							<h3 class="card-title">
+								Order items details
+							</h3>
+							<div class="card-tools">
+								<button type="button" class="btn btn-tool" data-card-widget="collapse">
+									<i class="fas fa-minus"></i>
+								</button>
+							</div>
+						</div>
+						<div class="card-body">
+							<div class="table-responsive">
+								<table id="example2" class="table table-bordered table-hover">
+									<thead>
+										<tr>
+											<th><small>Name</small></th>
+											<th><small>Price</small></th>
+											<th><small>Discount price</small></th>
+											<th><small>Category</small></th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for item in order.items.all %}
+										<tr>
+											<td>
+												<small class="text-info">
+													{{ item.item.title }}
+												</small>
+											</td>
+											<td>
+												<small>
+													{% if item.item.discount_price %}
+													<del>{{ item.item.price }}</del>
+													{% else %}
+													{{ item.item.price }}
+													{% endif %}
+												</small>
+											</td>
+											<td>
+												{% if item.item.discount_price %}
+												<small class="text-warning">
+													{{ item.item.discount_price }}
+												</small>
+												{% endif %}
+											</td>
+											<td>
+												<small>
+													{{ item.item.category }}
+												</small>
+											</td>
+										</tr>
+										{% endfor %}
+										<tr class="mb-3">
+											Total TTC: <b class="ml-2">${{order.get_total}}</b>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+{% endblock content %}

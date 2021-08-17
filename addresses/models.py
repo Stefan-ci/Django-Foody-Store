@@ -20,7 +20,7 @@ class Address(models.Model):
 		verbose_name='Adresse par défaut')
 
 	def __str__(self):
-		return self.user.username
+		return str(self.street_address)
 
 	class Meta:
 		verbose_name = 'Adresse'

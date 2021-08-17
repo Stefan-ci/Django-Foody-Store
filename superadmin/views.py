@@ -59,6 +59,83 @@ from payments.forms import PaymentForm
 
 
 
+
+@login_required(login_url='login')
+@admin_only
+def mark_all_as_delete(request):
+	notifications = Notification.objects.filter(recipient=request.user)
+	for notification in notifications:
+		if notif_settings.get_config()['SOFT_DELETE']:
+			notification.deleted = True
+			notification.save()
+		else:
+			notification.delete()
+	_next = request.GET.get('next')
+	if _next:
+		return redirect(_next)
+	return redirect('admin-inbox')
+
+
+
+
+@login_required(login_url='login')
+@admin_only
+def mark_as_delivered(request, id):
+	order = get_object_or_404(Order, id=id)
+	order.being_delivered = True
+	order.save()
+	messages.success(request, 'Order successfully marked as delivered !!!')
+	_next = request.GET.get('next')
+	if _next:
+		return redirect(_next)
+	return redirect('order-not-delivered')
+
+
+@login_required(login_url='login')
+@admin_only
+def mark_as_received(request, id):
+	order = get_object_or_404(Order, id=id)
+	order.received = True
+	order.save()
+	messages.success(request, 'Order successfully marked as received !!!')
+	_next = request.GET.get('next')
+	if _next:
+		return redirect(_next)
+	return redirect('order-not-received')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+not_received_orders_count = Order.objects.filter(
+	ordered=True,
+	being_delivered=True,
+	received=False,
+).count()
+not_delivered_orders_count = Order.objects.filter(
+	ordered=True,
+	being_delivered=False,
+	received=False,
+).count()
+
+
+
+
+
+
 complete_orders_list = Order.objects.filter(ordered=True)
 complete_orders_count = Order.objects.filter(ordered=True).count()
 
@@ -77,7 +154,7 @@ staff_users_count = User.objects.filter(is_staff=True).count()
 users_count = User.objects.all().count()
 
 orders_list = Order.objects.all().order_by('-id')[:100]
-total_orders_count = Order.objects.all().count()
+total_orders_count = Order.objects.filter(ordered=True).count()
 
 
 # Sales' annual chart reports data (getting by month)
@@ -150,6 +227,9 @@ total_profits_made = total_sales_made - total_expenses_made
 def admin_home_view(request):
 	
 	context = {
+		'not_received_orders_count' : not_received_orders_count,
+		'not_delivered_orders_count' : not_delivered_orders_count,
+		'total_orders_count' : total_orders_count,
 
 		'jan_sale' : jan_sale,
 		'feb_sale' : feb_sale,
@@ -232,7 +312,7 @@ def admin_home_view(request):
 		'complete_orders_count' : complete_orders_count,
 		'new_added_items_count' : new_added_items_count,
 		'not_complete_orders_count' : not_complete_orders_count,
-		'orders_list' : Order.objects.all().order_by('-id')[:10],
+		'orders_list' : Order.objects.filter(ordered=True,received=False).order_by('-id')[:5],
 	}
 
 	template_name = 'admin/admin_home.html'
@@ -251,13 +331,21 @@ def admin_home_view(request):
 
 @login_required(login_url='login')
 @admin_only
-def orders_list_view(request):
+def not_received_orders_list_view(request):
 
 	if 'search' in request.GET:
-		order = request.GET['search']
-		orders_list = Order.objects.filter(user__username__icontains=order).order_by('-id')
+		search_order = request.GET['search']
+		orders_list = Order.objects.filter(
+			ordered=True,
+			received=False,
+			being_delivered=True,
+			user__username__icontains=search_order,
+		).order_by('-id')[:100]
 	else:
-		orders_list = Order.objects.all().order_by('-id')[:100]
+		orders_list = Order.objects.filter(
+			ordered=True,
+			received=False,
+			being_delivered=True,).order_by('-id')[:100]
 
 	paginator = Paginator(orders_list, 100)
 	page = request.GET.get("page")
@@ -272,12 +360,157 @@ def orders_list_view(request):
 		
 
 	context = {
+		'not_received_orders_count' : not_received_orders_count,
 		'orders_list' : orders_obj,
 		'current_site' : get_current_site(request),
+		'not_delivered_orders_count' : not_delivered_orders_count,
+		'total_orders_count' : total_orders_count,
 	}
 
-	template_name = 'admin/tables/orders.html'
+	template_name = 'admin/orders/not_received_orders.html'
 	return render(request, template_name, context)
+
+
+
+
+
+
+
+
+
+
+@login_required(login_url='login')
+@admin_only
+def not_delivered_orders_list_view(request):
+
+	if 'search' in request.GET:
+		search_order = request.GET['search']
+		orders_list = Order.objects.filter(
+			ordered=True,
+			received=False,
+			being_delivered=False,
+			user__username__icontains=search_order,
+		).order_by('-id')[:100]
+	else:
+		orders_list = Order.objects.filter(
+			ordered=True,
+			received=False,
+			being_delivered=False,).order_by('-id')[:100]
+
+	paginator = Paginator(orders_list, 100)
+	page = request.GET.get("page")
+	orders_obj = paginator.get_page(page)
+
+	try:
+		orders_list = paginator.page(page)
+	except PageNotAnInteger:
+		orders_list = paginator.page(1)
+	except EmptyPage:
+		orders_list = paginator.page(paginator.num_pages)
+		
+
+	context = {
+		'not_received_orders_count' : not_received_orders_count,
+		'orders_list' : orders_obj,
+		'current_site' : get_current_site(request),
+		'not_delivered_orders_count' : not_delivered_orders_count,
+		'total_orders_count' : total_orders_count,
+	}
+
+	template_name = 'admin/orders/not_delivered_orders.html'
+	return render(request, template_name, context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@login_required(login_url='login')
+@admin_only
+def all_orders_list_view(request):
+
+	if 'search' in request.GET:
+		search_order = request.GET['search']
+		orders_list = Order.objects.filter(
+			ordered=True,
+			user__username__icontains=search_order,
+		).order_by('-id')[:100]
+	else:
+		orders_list = Order.objects.filter(
+			ordered=True).order_by('-id')[:100]
+
+	paginator = Paginator(orders_list, 100)
+	page = request.GET.get("page")
+	orders_obj = paginator.get_page(page)
+
+	try:
+		orders_list = paginator.page(page)
+	except PageNotAnInteger:
+		orders_list = paginator.page(1)
+	except EmptyPage:
+		orders_list = paginator.page(paginator.num_pages)
+		
+
+	context = {
+		'not_received_orders_count' : not_received_orders_count,
+		'orders_list' : orders_obj,
+		'current_site' : get_current_site(request),
+		'not_delivered_orders_count' : not_delivered_orders_count,
+		'total_orders_count' : total_orders_count,
+	}
+
+	template_name = 'admin/orders/all_orders_list.html'
+	return render(request, template_name, context)
+
+
+
+
+
+
+
+
+
+
+
+
+@login_required(login_url='login')
+@admin_only
+def order_detail_view(request, id):
+	# order_made = Order.objects.filter(ordered=True)
+	# order = get_object_or_404(order_made, id=id)
+
+	order = get_object_or_404(Order, id=id)
+
+	context = {
+		'order' : order,
+		'not_received_orders_count' : not_received_orders_count,
+		'current_site' : get_current_site(request),
+		'not_delivered_orders_count' : not_delivered_orders_count,
+		'total_orders_count' : total_orders_count,
+	}
+
+	template_name = 'admin/orders/order_detail.html'
+	return render(request, template_name, context)
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -290,7 +523,10 @@ def orders_list_view(request):
 @admin_only
 def admin_inbox_view(request):
 	
-	context = {}
+	context = {
+		'not_received_orders_count' : not_received_orders_count,
+		'not_delivered_orders_count' : not_delivered_orders_count,
+	}
 
 	template_name = 'admin/inbox/admin_inbox.html'
 	return render(request, template_name, context)
@@ -299,23 +535,6 @@ def admin_inbox_view(request):
 
 
 
-
-
-
-@login_required(login_url='login')
-@admin_only
-def mark_all_as_delete(request):
-	notifications = Notification.objects.filter(recipient=request.user)
-	for notification in notifications:
-		if notif_settings.get_config()['SOFT_DELETE']:
-			notification.deleted = True
-			notification.save()
-		else:
-			notification.delete()
-	_next = request.GET.get('next')
-	if _next:
-		return redirect(_next)
-	return redirect('admin-inbox')
 
 
 

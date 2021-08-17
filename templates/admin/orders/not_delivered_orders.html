@@ -7,9 +7,12 @@
 
 
 {% block title %}
-	Orders table | Foody
+	Not delivered orders table | Foody
 {% endblock title %}
 
+{% block navbar %}
+	{% include 'admin/includes/admin_navbar.html' %}
+{% endblock navbar %}
 
 {% block content %}
 
@@ -18,7 +21,7 @@
 			<div class="container-fluid">
 				<div class="row mb-2">
 					<div class="col-sm-6">
-						<h1 class="m-0 text-dark">Orders table</h1>
+						<h1 class="m-0 text-dark">Not delivered orders</h1>
 					</div>
 					<div class="col-sm-6">
 						<ol class="breadcrumb float-sm-right">
@@ -28,7 +31,7 @@
 								</a>
 							</li>
 							<li class="breadcrumb-item active">
-								Orders table
+								Not delivered orders
 							</li>
 						</ol>
 					</div>
@@ -43,8 +46,16 @@
 					<div class="card">
 						<div class="card-header">
 							<h3 class="card-title">
-								Table of orders (paginated by 100)
+								Orders that haven't been delivered and not received
 							</h3>
+							<span class="text-center ml-2">
+								<small>(You can search by 'user')</small>
+							</span>
+							<div class="card-tools">
+								<button type="button" class="btn btn-tool" data-card-widget="collapse">
+									<i class="fas fa-minus"></i>
+								</button>
+							</div>
 						</div>
 
 						<div class="card-body">
@@ -52,34 +63,34 @@
 								<table id="example2" class="table table-bordered table-hover">
 									<thead>
 										<tr>
+											<th>Mark as delivered</th>
 											<th>Order ID</th>
 											<th>User</th>
 											<th>Email</th>
 											<th>Ordered</th>
-											<th>Start date</th>
 											<th>Ordered date</th>
 											<th>Being delivered</th>
-											<th>Received</th>
-											<th>Refund requested</th>
-											<th>Refund granted</th>
-											<th>Billing address</th>
 											<th>Shipping address</th>
-											<th>Items</th>
-											<th>End</th>
 										</tr>
 									</thead>
 									<tbody>
 										{% for order in orders_list %}
 										<tr>
+											<td>
+												<a href="{% url 'mark_as_delivered' order.id %}?next=/superadmin/admin/orders/not-delivered/" type="button" class="btn btn-default btn-sm checkbox-toggle" title="Mark as delivered">
+													<i class="far fa-square"></i>
+												</a>
+
+											</td>
 											<th>
-												<a href="#">
+												<a href="{% url 'order-detail' order.id %}">
 													{{order.id}}
 												</a>
 											</th>
 											<td>
-												<small>
-													{{order.user.username}}
-												</small>
+												<a href="{% url 'order-detail' order.id %}">
+													<small>{{order.user.username}}</small>
+												</a>
 											</td>
 											<td>
 												<small>
@@ -92,11 +103,6 @@
 												{% else %}
 												<span class="badge badge-warning">Pending</span>
 												{% endif %}
-											</td>
-											<td>
-												<small>
-													{{order.start_date|naturaltime}}
-												</small>
 											</td>
 											<td>
 												{% if order.ordered_date %}
@@ -117,64 +123,14 @@
 												{% endif %}
 											</td>
 											<td>
-												{% if order.received %}
-												<span class="badge badge-success">Received</span>
-												{% else %}
-												<span class="badge badge-danger">Not received</span>
-												{% endif %}
-											</td>
-											<td>
-												{% if order.refund_requested %}
-												<span class="badge badge-success">Requested</span>
-												{% else %}
-												<span class="badge badge-danger">Not requested</span>
-												{% endif %}
-											</td>
-											<td>
-												{% if order.refund_granted %}
-												<span class="badge badge-success">Granted</span>
-												{% else %}
-												<span class="badge badge-danger">Not granted</span>
-												{% endif %}
-											</td>
-											<td>
-												<small>
-													{{order.billing_address.street_address}}, {{order.billing_address.apartment_address}}, 
-													{{order.billing_address.country}}
-												</small>
-											</td>
-											<td>
 												<small>
 													{{order.shipping_address.street_address}}, {{order.shipping_address.apartment_address}}, 
-													{{order.shipping_address.country}}
+													{{order.shipping_address.country.name}}
 												</small>
-											</td>
-											<td>
-												{% for item in order.items.all %}
-												<small>{{ item }}, </small>
-												{% endfor %}
 											</td>
 										</tr>
 										{% endfor %}
 									</tbody>
-									<tfoot>
-										<tr>
-											<th>Order ID</th>
-											<th>User</th>
-											<th>Email</th>
-											<th>Ordered</th>
-											<th>Start date</th>
-											<th>Ordered date</th>
-											<th>Being delivered</th>
-											<th>Received</th>
-											<th>Refund requested</th>
-											<th>Refund granted</th>
-											<th>Billing address</th>
-											<th>Shipping address</th>
-											<th>Items</th>
-											<th>End</th>
-										</tr>
-									</tfoot>
 								</table>
 							</div>
 						</div>

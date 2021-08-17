@@ -53,7 +53,7 @@
 
 
 	<!-- Main Sidebar Container -->
-	<aside class="main-sidebar sidebar-dark-primary elevation-4">
+	<aside class="main-sidebar sidebar-dark-info elevation-3">
 		
 		<!-- Brand Logo -->
 		<a href="{% url 'admin-home' %}" class="brand-link">
@@ -103,66 +103,39 @@
 
 					<li class="nav-item has-treeview">
 						<a href="#" class="nav-link">
-							<i class="nav-icon fas fa-table"></i>
+							<i class="nav-icon fas fa-shopping-cart"></i>
 							<p>
-								Tables
+								Orders
 								<i class="fas fa-angle-left right"></i>
 							</p>
 						</a>
 						<ul class="nav nav-treeview">
 							<li class="nav-item">
-								<a href="{% url 'order-table' %}" class="nav-link">
+								<a href="{% url 'order-not-delivered' %}" class="nav-link">
 									<i class="far fa-circle text-primary nav-icon"></i>
 									<p>
-										Orders
+										Not delivered orders
+										<small><span class="badge badge-warning right">{{ not_delivered_orders_count }}</span></small>
 									</p>
 								</a>
 							</li>
+
 							<li class="nav-item">
-								<a href="#" class="nav-link">
+								<a href="{% url 'order-not-received' %}" class="nav-link">
 									<i class="far fa-circle text-primary nav-icon"></i>
 									<p>
-										Payments
+										Not received orders
+										<small><span class="badge badge-warning right">{{ not_received_orders_count }}</span></small>
 									</p>
 								</a>
 							</li>
+
 							<li class="nav-item">
-								<a href="#" class="nav-link">
+								<a href="{% url 'all-orders' %}" class="nav-link">
 									<i class="far fa-circle text-primary nav-icon"></i>
 									<p>
-										Users
-									</p>
-								</a>
-							</li>
-							<li class="nav-item">
-								<a href="#" class="nav-link">
-									<i class="far fa-circle text-primary nav-icon"></i>
-									<p>
-										Items
-									</p>
-								</a>
-							</li>
-							<li class="nav-item">
-								<a href="#" class="nav-link">
-									<i class="far fa-circle text-primary nav-icon"></i>
-									<p>
-										Refunds
-									</p>
-								</a>
-							</li>
-							<li class="nav-item">
-								<a href="#" class="nav-link">
-									<i class="far fa-circle text-primary nav-icon"></i>
-									<p>
-										Sales
-									</p>
-								</a>
-							</li>
-							<li class="nav-item">
-								<a href="#" class="nav-link">
-									<i class="far fa-circle text-primary nav-icon"></i>
-									<p>
-										Expenses
+										All orders
+										<small><span class="badge badge-success right">{{ total_orders_count }}</span></small>
 									</p>
 								</a>
 							</li>

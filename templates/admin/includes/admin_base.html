@@ -25,19 +25,21 @@
 	{% block extra_head %}{% endblock extra_head %}
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
-
-	{% include 'admin/includes/admin_navbar.html' %}
 	
+
+<div class="wrapper">
+	{% block navbar %}{% endblock navbar %}
 	<!-- Content Wrapper. Contains page content -->
 	<div class="content-wrapper">
 		{% block content %}{% endblock content %}
 		{% block extra_content %} {% endblock extra_content %}
-
-		{% block footer %}
-		{% include 'admin/includes/admin_footer.html' %}
-		{% endblock footer %}
 	</div>
 	<!-- ./Content Wrapper. Contains page content -->
+	{% block footer %}
+	{% include 'admin/includes/admin_footer.html' %}
+	{% endblock footer %}
+</div>
+<!-- ./ Wrapper -->
 
 	{% block scripts %}
 	{% include 'admin/includes/admin_scripts.html' %}

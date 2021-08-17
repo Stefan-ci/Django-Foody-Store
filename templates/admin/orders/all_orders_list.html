@@ -1,0 +1,216 @@
+{% extends 'admin/includes/admin_base.html' %}
+
+{% load i18n %}
+{% load static %}
+{% load humanize %}
+{% load hitcount_tags %}
+
+
+{% block title %}
+	All orders table | Foody
+{% endblock title %}
+
+{% block navbar %}
+	{% include 'admin/includes/admin_navbar.html' %}
+{% endblock navbar %}
+
+{% block content %}
+
+	<!-- Content Header (Page header) -->
+		<section class="content-header pt-5 mt-5">
+			<div class="container-fluid">
+				<div class="row mb-2">
+					<div class="col-sm-6">
+						<h1 class="m-0 text-dark">All orders</h1>
+					</div>
+					<div class="col-sm-6">
+						<ol class="breadcrumb float-sm-right">
+							<li class="breadcrumb-item">
+								<a href="{% url 'admin-home' %}">
+									Admin home
+								</a>
+							</li>
+							<li class="breadcrumb-item active">
+								All orders
+							</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+		</section>
+
+
+		<section class="content mb-5">
+			<div class="row mb-2">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-header">
+							<h3 class="card-title">
+								Orders
+							</h3>
+							<span class="text-center ml-2">
+								<small>(You can search by 'user')</small>
+							</span>
+							<div class="card-tools">
+								<button type="button" class="btn btn-tool" data-card-widget="collapse">
+									<i class="fas fa-minus"></i>
+								</button>
+							</div>
+						</div>
+
+						<div class="card-body">
+							<div class="table-responsive">
+								<table id="example2" class="table table-bordered table-hover">
+									<thead>
+										<tr>
+											<th>Order ID</th>
+											<th>User</th>
+											<th>Email</th>
+											<th>Ordered</th>
+											<th>Ordered date</th>
+											<th>Being delivered</th>
+											<th>Received</th>
+											<th>Shipping address</th>
+										</tr>
+									</thead>
+									<tbody>
+										{% for order in orders_list %}
+										<tr>
+											<th>
+												<a href="{% url 'order-detail' order.id %}">
+													{{order.id}}
+												</a>
+											</th>
+											<td>
+												<a href="{% url 'order-detail' order.id %}">
+													<small>{{order.user.username}}</small>
+												</a>
+											</td>
+											<td>
+												<small>
+													{{order.user.email}}
+												</small>
+											</td>
+											<td>
+												{% if order.ordered %}
+												<span class="badge badge-info">Ordered</span>
+												{% else %}
+												<span class="badge badge-warning">Pending</span>
+												{% endif %}
+											</td>
+											<td>
+												{% if order.ordered_date %}
+												<small>
+													{{order.ordered_date|naturaltime}}
+												</small>
+												{% else %}
+												<small>
+													Not ordered
+												</small>
+												{% endif %}
+											</td>
+											<td>
+												{% if order.being_delivered %}
+												<span class="badge badge-success">Yes</span>
+												{% else %}
+												<span class="badge badge-danger">No</span>
+												{% endif %}
+											</td>
+											<td>
+												{% if order.received %}
+												<span class="badge badge-success">Received</span>
+												{% else %}
+												<span class="badge badge-danger">Not received</span>
+												{% endif %}
+											</td>
+											<td>
+												<small>
+													{{order.shipping_address.street_address}}, {{order.shipping_address.apartment_address}}, 
+													{{order.shipping_address.country.name}}
+												</small>
+											</td>
+										</tr>
+										{% endfor %}
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+
+			<div class="row pt-2">
+				<div class="col-md-4"></div>
+				<div class="col-md-4">
+					<div class="pagination text-center">
+						{% if orders_list.has_other_pages %}
+						  <nav aria-label="orders_list pagination" class="mb-4">
+						    <ul class="pagination">
+						      {% if orders_list.has_previous %}
+						        <li class="page-item mr-2">
+						          <a class="page-link" href="?page={{ orders_list.previous_page_number }}">&laquo;</a>
+						        </li>
+						      {% endif %}
+
+						      {% for page_num in orders_list.paginator.page_range %}
+						        {% if orders_list.number == page_num %}
+						          <li class="page-item active mr-1 ml-1">
+						            <span class="page-link">
+						              {{ page_num }}
+						              <span class="sr-only">(current)</span>
+						            </span>
+						          </li>
+						        {% elif page_num > orders_list.number|add:'-2' and page_num < orders_list.number|add:'2' %}
+						        <li class="page-item">
+						            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+						        </li>
+						        {% elif page_num > orders_list.number|add:'-3' and page_num < orders_list.number|add:'3' %}
+						        <li class="page-item">
+						            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+						        </li>
+						        {% elif page_num > orders_list.number|add:'-4' and page_num < orders_list.number|add:'4' %}
+						        <li class="page-item">
+						            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+						        </li>
+						        {% endif %}
+						      {% endfor %}
+
+						      {% if orders_list.has_next %}
+						        <li class="page-item ml-2">
+						          <a class="page-link" href="?page={{ orders_list.next_page_number }}">&raquo;</a>
+						        </li>
+						        <li class="page-item ml-2">
+						        	<a href="?page={{ orders_list.paginator.num_pages }}" class="page-link">End</a>
+						        </li>
+						      {% endif %}
+						    </ul>
+						  </nav>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</section>
+
+{% endblock content %}
+
+{% block extra_scripts %}
+	<script src="{% static 'js/admin/datatables/jquery.dataTables.min.js' %}"></script>
+	<script src="{% static 'js/admin/datatables/dataTables.bootstrap4.min.js' %}"></script>
+	<script src="{% static 'js/admin/datatables/dataTables.responsive.min.js' %}"></script>
+	<script src="{% static 'js/admin/datatables/responsive.bootstrap4.min.js' %}"></script>
+
+	<script>
+		$(function () {
+			$('#example2').DataTable({
+				"paging": false,
+				"lengthChange": false,
+				"searching": false,
+				"ordering": false,
+				"info": true,
+				"autoWidth": false,
+				"responsive": true,
+			});
+		});
+	</script>
+{% endblock extra_scripts %}
