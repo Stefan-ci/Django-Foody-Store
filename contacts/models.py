@@ -9,6 +9,8 @@ class Contact(models.Model):
 	message = models.TextField(null=True)
 	date = models.DateTimeField(auto_now_add=True)
 	is_answered = models.BooleanField(default=False)
+	unread = models.BooleanField(default=True)
+	deleted = models.BooleanField(default=False)
 
 	
 	def __str__(self):

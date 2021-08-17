@@ -27,7 +27,7 @@ def ping_admins(sender, instance, created, **kwargs):
 		notify.send(instance, 
 			recipient=User.objects.filter(is_superuser=True), 
 			verb=verb_msg,
-			level='info',
+			level='warning',
 			description=desc)
 post_save.connect(ping_admins, sender=User)
 

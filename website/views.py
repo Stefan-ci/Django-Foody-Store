@@ -110,15 +110,17 @@ def login_view(request):
 			if user.is_superuser:
 				if 'next' in request.POST:
 
-					messages.success(request, f"Welcome {username}")
+					messages.success(request, f"Welcome back dear admin {username}")
 					return redirect(request.POST.get('next'))
 				else:
-					messages.success(request,  f"Welcome {username}")
+					messages.success(request,  f"Welcome back dear admin {username}")
 					return redirect('admin-home')
 			else:
 				if 'next' in request.POST:
+					messages.success(request, f"Welcome back {username}")
 					return redirect(request.POST.get('next'))
 				else:
+					messages.success(request, f"Welcome back {username}")
 					return redirect('home')
 		else:
 			messages.warning(request, "Login attempt failed, try again !")

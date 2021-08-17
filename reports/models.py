@@ -1,4 +1,5 @@
 from django.db import models
+from payments.models import Payment
 
 class Expenses(models.Model):
 	amount = models.FloatField(null=True, blank=True)
@@ -21,6 +22,10 @@ class Sales(models.Model):
 	date = models.DateTimeField(auto_now_add=True, editable=False)
 	sale_type = models.CharField(max_length=200, editable=False)
 	reason = models.TextField(editable=False)
+	payment_id = models.ForeignKey(Payment, on_delete=models.DO_NOTHING,
+		null=True, blank=True)
+	payment_charge_id = models.ForeignKey(Payment,null=True,blank=True,
+		related_name='charge_id',on_delete=models.DO_NOTHING)
 
 	class Meta:
 		ordering = ('-date', 'amount',)
@@ -30,11 +35,4 @@ class Sales(models.Model):
 
 	def __str__(self):
 		return str(self.amount)
-
-
-	def get_total_sale_amount(self):
-		total = 0
-		for item in self.amount:
-			total += item
-		return total
 

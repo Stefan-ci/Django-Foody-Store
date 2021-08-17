@@ -41,6 +41,7 @@ this_month = today_date - datetime.timedelta(days=30)
 
 from products.models import Item
 from coupon.models import Coupon
+from contacts.models import Contact
 from orders.models import OrderItem, Order
 from addresses.models import Address
 from profil.models import Profil
@@ -106,6 +107,31 @@ def mark_as_received(request, id):
 
 
 
+@login_required(login_url='login')
+@admin_only
+def mark_contact_as_deleted(request, id):
+	contact = get_object_or_404(Contact, id=id)
+	contact.deleted = True
+	contact.save()
+	messages.success(request, 'Message successfully marked as deleted !!!')
+	_next = request.GET.get('next')
+	if _next:
+		return redirect(_next)
+	return redirect('new-messages')
+
+
+@login_required(login_url='login')
+@admin_only
+def mark_contact_as_read(request, id):
+	contact = get_object_or_404(Contact, id=id)
+	contact.unread = False
+	contact.is_answered = True
+	contact.save()
+	messages.success(request, 'Message successfully marked as read & answered !!!')
+	_next = request.GET.get('next')
+	if _next:
+		return redirect(_next)
+	return redirect('new-messages')
 
 
 
@@ -113,10 +139,25 @@ def mark_as_received(request, id):
 
 
 
+not_granted_refunds_count = Refund.objects.filter(
+	accepted=False).count()
+all_refunds_list = Refund.objects.all()
+all_refunds_count = Refund.objects.all().count()
 
 
 
-
+unread_contacts_count = Contact.objects.filter(
+	unread=True,
+	is_answered=False,
+	deleted=False).count()
+unread_contacts_nav_list = Contact.objects.filter(
+	unread=True,
+	is_answered=False,
+	deleted=False)[:10]
+unread_contacts_list = Contact.objects.filter(
+	unread=True,
+	is_answered=False,
+	deleted=False)[:50]
 
 
 
@@ -230,6 +271,17 @@ def admin_home_view(request):
 		'not_received_orders_count' : not_received_orders_count,
 		'not_delivered_orders_count' : not_delivered_orders_count,
 		'total_orders_count' : total_orders_count,
+
+
+		'unread_contacts_count' : unread_contacts_count,
+		'unread_contacts_list' : unread_contacts_list,
+		'unread_contacts_nav_list' : unread_contacts_nav_list,
+
+		'all_refunds_list' : all_refunds_list,
+		'all_refunds_count' : all_refunds_count,
+		'not_granted_refunds_count' : not_granted_refunds_count,
+
+
 
 		'jan_sale' : jan_sale,
 		'feb_sale' : feb_sale,
@@ -360,11 +412,23 @@ def not_received_orders_list_view(request):
 		
 
 	context = {
-		'not_received_orders_count' : not_received_orders_count,
 		'orders_list' : orders_obj,
+
+
+		'not_received_orders_count' : not_received_orders_count,
 		'current_site' : get_current_site(request),
 		'not_delivered_orders_count' : not_delivered_orders_count,
 		'total_orders_count' : total_orders_count,
+
+		'all_refunds_list' : all_refunds_list,
+		'all_refunds_count' : all_refunds_count,
+		'not_granted_refunds_count' : not_granted_refunds_count,
+
+
+		'unread_contacts_count' : unread_contacts_count,
+		'unread_contacts_list' : unread_contacts_list,
+		'unread_contacts_nav_list' : unread_contacts_nav_list,
+
 	}
 
 	template_name = 'admin/orders/not_received_orders.html'
@@ -410,11 +474,22 @@ def not_delivered_orders_list_view(request):
 		
 
 	context = {
-		'not_received_orders_count' : not_received_orders_count,
 		'orders_list' : orders_obj,
+		
+
+		'not_received_orders_count' : not_received_orders_count,
 		'current_site' : get_current_site(request),
 		'not_delivered_orders_count' : not_delivered_orders_count,
 		'total_orders_count' : total_orders_count,
+
+		'all_refunds_list' : all_refunds_list,
+		'all_refunds_count' : all_refunds_count,
+		'not_granted_refunds_count' : not_granted_refunds_count,
+
+		'unread_contacts_count' : unread_contacts_count,
+		'unread_contacts_list' : unread_contacts_list,
+		'unread_contacts_nav_list' : unread_contacts_nav_list,
+
 	}
 
 	template_name = 'admin/orders/not_delivered_orders.html'
@@ -462,11 +537,21 @@ def all_orders_list_view(request):
 		
 
 	context = {
-		'not_received_orders_count' : not_received_orders_count,
 		'orders_list' : orders_obj,
+		
+
+		'not_received_orders_count' : not_received_orders_count,
 		'current_site' : get_current_site(request),
 		'not_delivered_orders_count' : not_delivered_orders_count,
 		'total_orders_count' : total_orders_count,
+
+		'all_refunds_list' : all_refunds_list,
+		'all_refunds_count' : all_refunds_count,
+		'not_granted_refunds_count' : not_granted_refunds_count,
+
+		'unread_contacts_count' : unread_contacts_count,
+		'unread_contacts_list' : unread_contacts_list,
+		'unread_contacts_nav_list' : unread_contacts_nav_list,
 	}
 
 	template_name = 'admin/orders/all_orders_list.html'
@@ -493,10 +578,20 @@ def order_detail_view(request, id):
 
 	context = {
 		'order' : order,
+
+
 		'not_received_orders_count' : not_received_orders_count,
 		'current_site' : get_current_site(request),
 		'not_delivered_orders_count' : not_delivered_orders_count,
 		'total_orders_count' : total_orders_count,
+
+		'all_refunds_list' : all_refunds_list,
+		'all_refunds_count' : all_refunds_count,
+		'not_granted_refunds_count' : not_granted_refunds_count,
+
+		'unread_contacts_count' : unread_contacts_count,
+		'unread_contacts_list' : unread_contacts_list,
+		'unread_contacts_nav_list' : unread_contacts_nav_list,
 	}
 
 	template_name = 'admin/orders/order_detail.html'
@@ -525,12 +620,78 @@ def admin_inbox_view(request):
 	
 	context = {
 		'not_received_orders_count' : not_received_orders_count,
+		'current_site' : get_current_site(request),
 		'not_delivered_orders_count' : not_delivered_orders_count,
+		'total_orders_count' : total_orders_count,
+
+		'all_refunds_list' : all_refunds_list,
+		'all_refunds_count' : all_refunds_count,
+		'not_granted_refunds_count' : not_granted_refunds_count,
+
+		'unread_contacts_count' : unread_contacts_count,
+		'unread_contacts_list' : unread_contacts_list,
+		'unread_contacts_nav_list' : unread_contacts_nav_list,
 	}
 
 	template_name = 'admin/inbox/admin_inbox.html'
 	return render(request, template_name, context)
 
+
+
+
+
+
+
+
+
+
+
+
+
+def new_messages_list_view(request):
+
+	if 'search' in request.GET:
+		search = request.GET['search']
+		unread_contacts_list = Contact.objects.filter(
+			unread=True,
+			is_answered=False,
+			deleted=False,
+			name__icontains=search,
+		).order_by('-id')[:100]
+	else:
+		unread_contacts_list = Contact.objects.filter(
+			unread=True,
+			is_answered=False,
+			deleted=False,).order_by('-id')[:100]
+
+	paginator = Paginator(unread_contacts_list, 100)
+	page = request.GET.get("page")
+	orders_obj = paginator.get_page(page)
+
+	try:
+		unread_contacts_list = paginator.page(page)
+	except PageNotAnInteger:
+		unread_contacts_list = paginator.page(1)
+	except EmptyPage:
+		unread_contacts_list = paginator.page(paginator.num_pages)
+
+	context = {
+		'not_received_orders_count' : not_received_orders_count,
+		'current_site' : get_current_site(request),
+		'not_delivered_orders_count' : not_delivered_orders_count,
+		'total_orders_count' : total_orders_count,
+
+		'all_refunds_list' : all_refunds_list,
+		'all_refunds_count' : all_refunds_count,
+		'not_granted_refunds_count' : not_granted_refunds_count,
+
+		'unread_contacts_count' : unread_contacts_count,
+		'unread_contacts_list' : unread_contacts_list,
+		'unread_contacts_nav_list' : unread_contacts_nav_list,
+	}
+
+	template_name = 'admin/messages/new_messages.html'
+	return render(request, template_name, context)
 
 
 

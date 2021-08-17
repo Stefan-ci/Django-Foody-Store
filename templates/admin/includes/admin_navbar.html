@@ -30,7 +30,64 @@
 
 		<!-- Right navbar links -->
 		<ul class="navbar-nav ml-auto">
-			<!-- Notifications Dropdown Menu -->
+			<!-- Contacts Dropdown Menu -->
+			<li class="nav-item dropdown">
+				<a class="nav-link" data-toggle="dropdown" href="#">
+					<i class="far fa-envelope"></i>
+					{% if unread_contacts_count %}
+					<span class="badge badge-danger navbar-badge">
+						<small>
+							{{unread_contacts_count}}
+						</small>
+					</span>
+					{% else %}
+					<small>
+						<span class="badge badge-danger navbar-badge">
+							<small>
+								0
+							</small>
+						</span>
+					</small>
+					{% endif %}
+				</a>
+				{% if unread_contacts_count %}
+				<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+					<span class="dropdown-item dropdown-header">
+						{{unread_contacts_count}}
+					</span>
+
+					{% for contact in unread_contacts_nav_list %}
+					<div class="dropdown-divider"></div>
+					<a href="#" class="dropdown-item">
+						<small>
+							<i class="fas fa-envelope mr-2 small"></i>
+							<b>{{contact.name|safe|truncatechars:6}}</b>, {{contact.message|safe|truncatechars:14}}
+						</small>
+						<small>
+							<span class="float-right text-muted text-sm">
+								<small>
+									{{contact.date|naturaltime}}
+								</small>
+							</span>
+						</small>
+					</a>
+					{% endfor %}
+					
+					<div class="dropdown-divider mt-3"></div>
+					<a href="#" class="dropdown-item dropdown-footer bg-info small">See all messages</a>
+				</div>
+				{% else %}
+				<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+					<span class="dropdown-item dropdown-header">
+						<small>
+							No new messages
+						</small>
+					</span>
+				</div>
+				{% endif %}
+			</li>
+
+
 			<li class="nav-item">
 				<a class="nav-link" href="{% url 'admin-inbox' %}">
 					<i class="far fa-bell"></i>
@@ -43,8 +100,8 @@
 			</li>
 
 			<li class="nav-item">
-				<a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
-					<i class="fas fa-th-large"></i>
+				<a class="nav-link" data-toggle="modal" data-target="#logoutModal" href="#" role="button">
+					<i class="fa fa-sign-out-alt"></i>
 				</a>
 			</li>
 		</ul>
@@ -157,7 +214,7 @@
 						<ul class="nav nav-treeview">
 							{% if request.user.notifications.unread %}
 							<li class="nav-item">
-								<a href="#" class="nav-link">
+								<a href="{% url 'admin-inbox' %}" class="nav-link">
 									<i class="far fa-circle text-warning nav-icon"></i>
 									<p>
 										Unread notifs
@@ -165,17 +222,91 @@
 									</p>
 								</a>
 							</li>
-							{% endif %}
-
+							{% else %}
 							<li class="nav-item">
 								<small class="nav-link">
 									There are no new notifications
 								</small>
 							</li>
+							{% endif %}
 						</ul>
 					</li>
 
 
+					<li class="nav-header">CONTACTS</li>
+					<li class="nav-item has-treeview">
+						<a href="#" class="nav-link">
+							<i class="nav-icon fas fa-envelope"></i>
+							<p>
+								Messages
+								<i class="right fas fa-angle-left"></i>
+								{% if unread_contacts_count %}
+								<span class="badge badge-info right">
+									{{ unread_contacts_count }}
+								</span>
+								{% endif %}
+							</p>
+						</a>
+						<ul class="nav nav-treeview">
+							{% if unread_contacts_count %}
+							<li class="nav-item">
+								<a href="{% url 'new-messages' %}" class="nav-link">
+									<i class="far fa-circle text-warning nav-icon"></i>
+									<p>
+										New messages
+										<small><span class="badge badge-danger right">{{ unread_contacts_count }}</span></small>
+									</p>
+								</a>
+							</li>
+							{% else %}
+							<li class="nav-item">
+								<small class="nav-link">
+									<i class="far fa-circle text-success nav-icon"></i>
+									No new message
+								</small>
+							</li>
+							{% endif %}
+
+							{% if not_granted_refunds_count %}
+							<li class="nav-item">
+								<a href="#" class="nav-link">
+									<i class="fa fa-dollar-sign text-warning nav-icon"></i>
+									<p>
+										Not granted refunds
+										<small><span class="badge badge-warning right">{{not_granted_refunds_count}}</span></small>
+									</p>
+								</a>
+							</li>
+							{% else %}
+							<li class="nav-item">
+								<small class="nav-link">
+									<i class="far fa-circle text-success nav-icon"></i>
+									No new refund request
+								</small>
+							</li>
+							{% endif %}
+
+							{% if all_refunds_list %}
+							<li class="nav-item">
+								<a href="#" class="nav-link">
+									<i class="fa fa-dollar-sign text-info nav-icon"></i>
+									<p>
+										All refund requests
+									</p>
+								</a>
+							</li>
+							{% else %}
+							<li class="nav-item">
+								<small class="nav-link">
+									<i class="far fa-circle text-success nav-icon"></i>
+									No refund requests in db
+								</small>
+							</li>
+							{% endif %}
+
+
+						</ul>
+					</li>
 
 				</ul>
 			</nav>
@@ -183,6 +314,33 @@
 		</div>
 	
 	</aside>
+
+
+
+	<!-- Logout Modal-->
+	<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+	    aria-hidden="true">
+	    <div class="modal-dialog" role="document">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <h6 class="modal-title" id="exampleModalLabel">
+	                  Dear <span class="text-info">{{request.user.username}}</span>, do you want to logout or quit admin part ? 
+	                </h6>
+	                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">×</span>
+	                </button>
+	            </div>
+	            <div class="modal-footer">
+	                <a class="btn btn-warning" href="{% url 'home' %}">
+	                	Quit
+	                </a>
+	                <a class="btn btn-outline-danger" href="{% url 'logout' %}">
+	                	Logout
+	                </a>
+	            </div>
+	        </div>
+	    </div>
+	</div>
 
 
 

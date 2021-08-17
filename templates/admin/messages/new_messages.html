@@ -1,0 +1,209 @@
+{% extends 'admin/includes/admin_base.html' %}
+
+{% load i18n %}
+{% load static %}
+{% load humanize %}
+{% load hitcount_tags %}
+
+
+{% block title %}
+	New messages | Foody
+{% endblock title %}
+
+{% block navbar %}
+	{% include 'admin/includes/admin_navbar.html' %}
+{% endblock navbar %}
+
+
+{% block content %}
+		
+		{% if messages %}
+		<div class="container">
+			<div class="row">
+				<div class="col-3 col-3"></div>
+				<div class="col-6 col-6">
+					<div class="mt-5 pt-2 center-block">
+		    		{% for message in messages %}
+		    		    <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
+		    		        {{ message }}
+		    		        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		    		            <span aria-hidden="true">&times;</span>
+		    		        </button>
+		    		    </div>
+		    		{% endfor %}
+			    	</div>
+				</div>
+		    </div>
+		</div>
+		{% endif %}
+
+
+		<!-- Content Header (Page header) -->
+		<div class="content-header pt-5 mt-5">
+			<div class="container-fluid">
+				<div class="row mb-4">
+					<div class="col-sm-6">
+						<h1 class="m-0 text-dark">New messages (not answered)</h1>
+						<p>
+							<small>
+								You can search by contact name (name and/or surname)
+							</small>
+						</p>
+					</div>
+					<div class="col-sm-6">
+						<ol class="breadcrumb float-sm-right">
+							<li class="breadcrumb-item">
+								<a href="{% url 'admin-home' %}">
+									Admin home
+								</a>
+							</li>
+							<li class="breadcrumb-item active">
+								New messages
+							</li>
+						</ol>
+					</div>
+				</div>
+				{% if request.GET.search %}
+				<div class="row">
+					<div class="col-3"></div>
+					<div class="col-6">
+						<div class="text-center">
+							<p>
+								Search results for <strong class="text-info">{{request.GET.search}}</strong>
+							</p>
+						</div>
+					</div>
+				</div>
+				{% endif %}
+			</div>
+		</div>
+
+
+		<!-- Main content -->
+		<section class="content mb-5">
+			<div class="container-fluid">
+				<!-- Contact boxes -->
+				<div class="row">
+					{% for contact in unread_contacts_list %}
+					<div class="col-md-4">
+						<!-- Widget: user widget -->
+						<div class="card widget-user">
+							<div class="card-header">
+								<h5 class="card-title pt-2 pb-0">
+									Message ID: <span class="text-info">{{contact.id}}</span>
+								</h5>
+								<div class="card-tools">
+									<a href="#" type="button" class="btn btn-default btn-sm" title="Answer to this message">
+										<i class="fas fa-reply"></i>
+									</a>
+									<a href="{% url 'mark_msg_as_deleted' contact.id %}" type="button" class="btn btn-default btn-sm" title="Delete this message">
+										<i class="far fa-trash-alt"></i>
+									</a>
+									<a href="{% url 'mark_msg_as_read_and_answered' contact.id %}" type="button" class="btn btn-default btn-sm" title="Mark this message as read and answered">
+										<i class="fa fa-book-open"></i>
+									</a>
+									<button type="button" class="btn btn-tool" data-card-widget="collapse">
+										<i class="fas fa-minus"></i>
+									</button>
+								</div>
+							</div> <!-- /.card-header -->
+							
+							<div class="card-body">
+								<div class="widget-user-header p-0 m-0 bg-info">
+									<div>
+										<strong>
+											Name/Surname
+										</strong>: 
+										<span class="text-uppercase">
+											{{contact.name|safe}}
+										</span>
+									</div>
+									<div>
+										<strong class="text-lowercase">
+											Subject
+										</strong>: 
+										<small>
+											{{contact.subject|safe}}
+										</small>
+									</div>
+									<div>
+										<strong>
+											Email
+										</strong>: 
+										<small>
+											{{contact.email}}
+										</small>
+									</div>
+								</div>
+								<p class="small p-0">
+									<small>
+										{{contact.message|safe|linebreaks}}
+									</small>
+								</p>
+								<hr>
+								<div class="text-center">
+									<small>
+										{{contact.date|naturaltime}}
+									</small>
+								</div>
+							</div>
+						</div>
+					</div>
+					{% endfor %}
+				</div>
+
+
+				<div class="row pt-2">
+					<div class="col-md-4"></div>
+					<div class="col-md-4">
+						<div class="pagination text-center">
+							{% if unread_contacts_list.has_other_pages %}
+							  <nav aria-label="unread_contacts_list pagination" class="mb-4">
+							    <ul class="pagination">
+							      {% if unread_contacts_list.has_previous %}
+							        <li class="page-item mr-2">
+							          <a class="page-link" href="?page={{ unread_contacts_list.previous_page_number }}">&laquo;</a>
+							        </li>
+							      {% endif %}
+
+							      {% for page_num in unread_contacts_list.paginator.page_range %}
+							        {% if unread_contacts_list.number == page_num %}
+							          <li class="page-item active mr-1 ml-1">
+							            <span class="page-link">
+							              {{ page_num }}
+							              <span class="sr-only">(current)</span>
+							            </span>
+							          </li>
+							        {% elif page_num > unread_contacts_list.number|add:'-2' and page_num < unread_contacts_list.number|add:'2' %}
+							        <li class="page-item">
+							            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+							        </li>
+							        {% elif page_num > unread_contacts_list.number|add:'-3' and page_num < unread_contacts_list.number|add:'3' %}
+							        <li class="page-item">
+							            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+							        </li>
+							        {% elif page_num > unread_contacts_list.number|add:'-4' and page_num < unread_contacts_list.number|add:'4' %}
+							        <li class="page-item">
+							            <a class="page-link" href="?page={{ page_num }}">{{ page_num }}</a>
+							        </li>
+							        {% endif %}
+							      {% endfor %}
+
+							      {% if unread_contacts_list.has_next %}
+							        <li class="page-item ml-2">
+							          <a class="page-link" href="?page={{ unread_contacts_list.next_page_number }}">&raquo;</a>
+							        </li>
+							        <li class="page-item ml-2">
+							        	<a href="?page={{ unread_contacts_list.paginator.num_pages }}" class="page-link">End</a>
+							        </li>
+							      {% endif %}
+							    </ul>
+							  </nav>
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+{% endblock content %}
+

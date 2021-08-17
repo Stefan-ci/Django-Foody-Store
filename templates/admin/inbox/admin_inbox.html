@@ -14,10 +14,30 @@
 	{% include 'admin/includes/admin_navbar.html' %}
 {% endblock navbar %}
 
-
-
 {% block content %}
-	<!-- Content Header (Page header) -->
+
+		{% if messages %}
+		<div class="container">
+			<div class="row">
+				<div class="col-3 col-3"></div>
+				<div class="col-6 col-6">
+					<div class="mt-5 pt-2 center-block">
+		    		{% for message in messages %}
+		    		    <div class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
+		    		        {{ message }}
+		    		        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		    		            <span aria-hidden="true">&times;</span>
+		    		        </button>
+		    		    </div>
+		    		{% endfor %}
+			    	</div>
+				</div>
+		    </div>
+		</div>
+		{% endif %}
+
+		
+		<!-- Content Header (Page header) -->
 		<div class="content-header pt-5 mt-5">
 			<div class="container-fluid">
 				<div class="row mb-4">
@@ -45,8 +65,8 @@
 		<section class="content mb-5">
 			<div class="container-fluid">
 				<div class="row">
-					<div class="col-md-2"></div>
-					<div class="col-md-8">
+					<div class="col-1"></div>
+					<div class="col-10">
 						<div class="card card-primary card-outline">
 							<div class="card-header">
 								<h3 class="card-title">Inbox</h3>
@@ -60,18 +80,18 @@
 							<div class="card-body p-0">
 								{% if request.user.notifications.unread %}
 								<div class="mailbox-controls">
-									<a href="{% url 'notifications:mark_all_as_read' %}?next=/superadmin/admin/inbox/" type="button" class="btn btn-default btn-sm checkbox-toggle" title="Mark all as read">
-										<i class="fa fa-check"></i>
+									<a href="{% url 'notifications:mark_all_as_read' %}?next=/superadmin/admin/inbox/" type="button" class="btn btn-default btn-sm checkbox-toggle" title="Mark all notifications as read">
+										<i class="fa fa-book-open"></i>
 									</a>
 
-									<a href="{% url 'mark_all_notifs_as_delete' %}?next=/superadmin/admin/inbox/" type="button" class="btn btn-default btn-sm" title="Delete all">
+									<a href="{% url 'mark_all_notifs_as_delete' %}?next=/superadmin/admin/inbox/" type="button" class="btn btn-default btn-sm" title="Delete all notifications">
 										<i class="far fa-trash-alt"></i>
 									</a>
 
 
 									<div class="float-right">
 										<small>
-											Total = {{ request.user.notifications.unread.count }}
+											Total notifications = <b>{{ request.user.notifications.unread.count }}</b>
 										</small>
 									</div>
 								</div>
@@ -80,11 +100,11 @@
 									<table class="table table-hover table-striped">
 										<tbody>
 											{% for notif in request.user.notifications.unread %}
-											<tr>
+											<tr class="p-0 {%if notif.level == 'error' %} bg-danger {%else%} bg-{{notif.level}} {%endif%}">
 												<td>
 													<div class="icheck-primary">
-														<a href="{% url 'notifications:mark_as_read' notif.slug  %}?next=/superadmin/admin/inbox/" type="button" title="Mark as read" value="" id="check1">
-															<i class="far fa-square"></i>
+														<a href="{% url 'notifications:mark_as_read' notif.slug  %}?next=/superadmin/admin/inbox/" type="button" title="Mark this notification as read" value="" id="check1">
+															<i class="fa fa-check text-dark"></i>
 														</a>
 													</div>
 												</td>
@@ -98,7 +118,7 @@
 												</td>
 												<td class="mailbox-subject">
 													<small>
-														{{notif.description}}
+														{{notif.description|safe|linebreaks}}
 													</small>
 												</td>
 												<td class="mailbox-date">

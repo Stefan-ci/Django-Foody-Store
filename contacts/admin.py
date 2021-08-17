@@ -3,8 +3,9 @@ from contacts.models import Contact
 from import_export.admin import ImportExportModelAdmin
 
 class ContactAdmin(ImportExportModelAdmin):
-	list_display = ['name', 'email', 'subject', 'is_answered', 'date']
-	list_filter = ['email', 'date', 'is_answered']
+	list_display = ['name', 'email', 'subject', 'is_answered', 
+		'unread', 'date']
+	list_filter = ['email', 'date', 'is_answered', 'unread']
 	date_hierarchy = 'date'
 
 	def has_add_permission(self, request):
@@ -14,7 +15,7 @@ class ContactAdmin(ImportExportModelAdmin):
 		return False
 
 	def has_change_permission(self, request, obj=None):
-		return False
+		return True
 
 
 admin.site.register(Contact, ContactAdmin)
