@@ -72,50 +72,52 @@
 			<div class="row">
 				
 				{% for item in items %}
-				<div class="col-lg-3 col-md-3">
-					<div class="products">
-						<a href="{% url 'food-detail' item.id item.slug %}">
-							<img src="{{item.picture.url}}" alt="{{item.title}}" title="{{item.title}}">
-						</a>
-						<a href="{% url 'food-detail' item.id item.slug %}">
-							<h5>
-								{{item.title}}
-							</h5>
-						</a>
-						
-						{% if request.user.is_superuser %}
-						<p class="text-danger">
-							<small>
-								{% get_hit_count for item %} views !
-							</small>
-						</p>
-						{% endif %}
+				<div class="col-md-12">
+					<div class="col-md-3 col-lg-3">
+						<div class="products">
+							<a href="{% url 'food-detail' item.id item.slug %}">
+								<img src="{{item.picture.url}}" alt="{{item.title}}" title="{{item.title}}">
+							</a>
+							<a href="{% url 'food-detail' item.id item.slug %}">
+								<h5>
+									{{item.title}}
+								</h5>
+							</a>
+							
+							{% if request.user.is_superuser %}
+							<p class="text-danger">
+								<small>
+									{% get_hit_count for item %} views !
+								</small>
+							</p>
+							{% endif %}
 
-						
-						{% if item.price == 0.0 %}
-						<p class="price">
-							Free
-						</p>
-						{% else %}
-						{% if item.discount_price %}
-						<del>$ {{item.price}}</del>
-						<p class="price">
-							$ {{item.discount_price}}
-						</p>
-						{% else %}
-						<p class="price">
-							$ {{item.price}}
-						</p>
-						{% endif %}
-						{% endif %}
-						
+							
+							{% if item.price == 0.0 %}
+							<p class="price">
+								Free
+							</p>
+							{% else %}
+							{% if item.discount_price %}
+							<del>$ {{item.price}}</del>
+							<p class="price">
+								$ {{item.discount_price}}
+							</p>
+							{% else %}
+							<p class="price">
+								$ {{item.price}}
+							</p>
+							{% endif %}
+							{% endif %}
+							
 
-						<a class="view-link shutter" href="{{ item.get_add_to_cart_url }}">
-							<i class="fa fa-plus-circle"></i>
-							Add to cart
-						</a>
-					</div>	<!-- End of /.products -->
-				</div>	<!-- End of /.col-md-3 -->
+							<a class="view-link shutter" href="{{ item.get_add_to_cart_url }}">
+								<i class="fa fa-plus-circle"></i>
+								Add to cart
+							</a>
+						</div>	<!-- End of /.products -->
+					</div>	<!-- End of /.col-md-3 -->
+				</div>
 				{% endfor %}
 			
 			</div>
